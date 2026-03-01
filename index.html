@@ -4,56 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Твое состояние | Интерактив</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Georgia', serif; background: #000; color: white; }
-        
+        :root {
+            --terra-dark: #8e3e2b;
+            --terra-medium: #bc614a;
+            --terra-light: #d9917b;
+        }
+
+        body, html { 
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            overflow: hidden; font-family: 'Cormorant Garamond', serif; 
+            color: #fff8f0; 
+        }
+
+        /* Анимированный терракотовый фон */
+        .bg-gradient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--terra-dark), var(--terra-medium), var(--terra-light));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .screen { 
             position: absolute; width: 100%; height: 100%; 
             display: flex; flex-direction: column; justify-content: center; 
-            align-items: center; text-align: center; transition: 0.8s opacity ease; opacity: 0; pointer-events: none;
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            align-items: center; text-align: center; 
+            transition: opacity 1.2s ease, transform 1.2s ease; 
+            opacity: 0; pointer-events: none; transform: translateY(10px);
         }
-        .active { opacity: 1; pointer-events: auto; }
+        .active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-        h1 { font-weight: 300; font-size: 24px; max-width: 80%; line-height: 1.4; margin-bottom: 20px; }
+        h1 { font-weight: 300; font-size: 28px; max-width: 80%; line-height: 1.2; margin-bottom: 30px; letter-spacing: 1px; }
         
-        /* Поле ввода имени */
         input { 
-            background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.5);
-            color: white; padding: 10px; text-align: center; font-size: 18px; outline: none; margin-bottom: 30px;
+            background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.4);
+            color: white; padding: 10px; text-align: center; font-size: 20px; 
+            outline: none; margin-bottom: 40px; font-family: inherit; width: 250px;
         }
 
-        /* Кнопки выбора */
-        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; max-width: 350px; }
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 85%; max-width: 400px; }
+        
         .choice-btn { 
-            padding: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);
-            border-radius: 15px; color: white; cursor: pointer; transition: 0.3s; font-size: 16px;
+            padding: 25px 10px; border: 1px solid rgba(255,255,255,0.25); 
+            background: rgba(255,255,255,0.08); backdrop-filter: blur(5px);
+            border-radius: 50% 50% 0 0; /* Форма арки */
+            color: white; cursor: pointer; transition: 0.4s; font-size: 18px; font-family: inherit;
         }
-        .choice-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+        .choice-btn:active { background: rgba(255,255,255,0.2); transform: translateY(-5px); }
 
-        /* Экран результата */
-        .result-img { width: 85vw; max-width: 320px; border-radius: 20px; box-shadow: 0 0 30px rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .result-text { font-style: italic; font-size: 18px; max-width: 85%; line-height: 1.6; margin-bottom: 30px; }
+        /* Уменьшенное парящее изображение */
+        .result-img { 
+            width: 60vw; max-width: 240px; border-radius: 120px 120px 0 0; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            margin-bottom: 25px; animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .result-text { 
+            font-style: italic; font-size: 22px; max-width: 80%; 
+            line-height: 1.5; margin-bottom: 40px; font-weight: 300;
+        }
 
         .btn-main { 
-            background: white; color: black; padding: 15px 30px; border-radius: 50px; 
-            text-decoration: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; border: none;
+            background: rgba(255,255,255,0.9); color: var(--terra-dark); 
+            padding: 14px 35px; border-radius: 30px; 
+            text-decoration: none; font-weight: 500; font-size: 16px;
+            cursor: pointer; border: none; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .btn-tg { background: #0088cc; color: white; font-size: 14px; }
+        .btn-outline {
+            background: transparent; border: 1px solid white; color: white;
+            margin-top: 15px; padding: 10px 25px; font-size: 14px;
+        }
+
+        .footer-note { font-size: 14px; opacity: 0.7; margin-top: 30px; max-width: 70%; line-height: 1.4; }
     </style>
 </head>
 <body>
 
-    <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+    <div class="bg-gradient"></div>
+
+    <audio id="bgMusic" loop src="https://www.chosic.com/wp-content/uploads/2021/04/Rainy-Day-Chill-Lofi-Vibes.mp3"></audio>
 
     <div class="screen active" id="screen1">
-        <h1>Мир суетится снаружи...<br>Что ты чувствуешь сейчас?</h1>
-        <input type="text" id="userName" placeholder="Твое имя (можно пропустить)">
-        <button class="btn-main" onclick="goToChoices()">Заглянуть в себя</button>
+        <h1>Прислушайся к себе...<br>Что ты чувствуешь сейчас?</h1>
+        <input type="text" id="userName" placeholder="твое имя...">
+        <button class="btn-main" onclick="goToChoices()">Начать погружение</button>
     </div>
 
     <div class="screen" id="screen2">
-        <h1>Выбери то, что откликается в сердце прямо сейчас:</h1>
+        <h1>Что откликается сейчас?</h1>
         <div class="choice-grid">
             <button class="choice-btn" onclick="showResult('tenderness')">Нежность</button>
             <button class="choice-btn" onclick="showResult('joy')">Радость</button>
@@ -66,62 +118,46 @@
         <img id="resImg" class="result-img" src="">
         <p class="result-text" id="resText"></p>
         
-        <button class="btn-main" onclick="shareMagic()">Поделиться с друзьями ✨</button>
-        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main btn-tg">Хочу такую же магию ✨</a>
-        <p onclick="location.reload()" style="font-size: 12px; opacity: 0.5; cursor: pointer; margin-top: 10px;">Начать заново</p>
+        <button class="btn-main" onclick="backToChoices()">Прислушаться еще раз...</button>
+        
+        <p class="footer-note">Чувствуешь, как меняется пространство, когда в нем появляется смысл?</p>
+        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main btn-outline">Создать свою цифровую историю ✨</a>
     </div>
 
     <script>
         let name = "";
         const results = {
-            tenderness: {
-                img: "img/11.png",
-                text: "Нежность-это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах."
-            },
-            joy: {
-                img: "img/22.png",
-                text: "Радость-это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил."
-            },
-            power: {
-                img: "img/33.png",
-                text: "Сила-это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь."
-            },
-            character: {
-                img: "img/44.png",
-                text: "Характер-это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра."
-            }
+            tenderness: { img: "img/11.png", text: "Нежность - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах." },
+            joy: { img: "img/22.png", text: "Радость - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
+            power: { img: "img/33.png", text: "Сила - это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
+            character: { img: "img/44.png", text: "Характер - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
         };
 
         function goToChoices() {
             name = document.getElementById('userName').value.trim();
-            document.getElementById('screen1').classList.remove('active');
-            document.getElementById('screen2').classList.add('active');
+            switchScreen('screen1', 'screen2');
             const music = document.getElementById('bgMusic');
-            music.volume = 0.3;
+            music.volume = 0.2;
             music.play();
         }
 
         function showResult(type) {
             const data = results[type];
-            const greeting = name ? name + ", знай: " : "";
-            
+            const greeting = name ? name + ", " : "";
             document.getElementById('resImg').src = data.img;
             document.getElementById('resText').innerHTML = greeting + data.text;
-            
-            document.getElementById('screen2').classList.remove('active');
-            document.getElementById('screen3').classList.add('active');
+            switchScreen('screen2', 'screen3');
         }
 
-        function shareMagic() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Мое состояние сегодня',
-                    text: 'Посмотри, какой глубокий интерактив я нашла...',
-                    url: window.location.href
-                });
-            } else {
-                alert("Скопируйте ссылку и отправьте друзьям!");
-            }
+        function backToChoices() {
+            switchScreen('screen3', 'screen2');
+        }
+
+        function switchScreen(from, to) {
+            document.getElementById(from).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(to).classList.add('active');
+            }, 600);
         }
     </script>
 </body>
