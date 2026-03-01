@@ -55,14 +55,18 @@
         .choice-btn { 
             padding: 25px 10px; border: 1px solid rgba(255,255,255,0.25); 
             background: rgba(255,255,255,0.08); backdrop-filter: blur(5px);
-            border-radius: 50% 50% 0 0; /* Форма арки */
+            border-radius: 15px; /* Мягкий прямоугольник */
+            padding: 20px 10px;  /* Чуть меньше высоты, чтобы было аккуратнее */
+        }
             color: white; cursor: pointer; transition: 0.4s; font-size: 18px; font-family: inherit;
         }
         .choice-btn:active { background: rgba(255,255,255,0.2); transform: translateY(-5px); }
 
         /* Уменьшенное парящее изображение */
         .result-img { 
-            width: 60vw; max-width: 240px; border-radius: 120px 120px 0 0; 
+            border-radius: 20px; /* Просто мягкие уголки */
+            width: 70vw;         /* Можно чуть-чуть увеличить, раз нет арки */
+        } 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
             margin-bottom: 25px; animation: float 4s ease-in-out infinite;
         }
