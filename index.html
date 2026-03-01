@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Твое состояние | Интерактив</title>
+    <title>Твое состояние | Финал</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
     <style>
         :root {
-            --terra-dark: #8e3e2b;
-            --terra-medium: #bc614a;
-            --terra-light: #d9917b;
+            /* Палитра мокрого песка */
+            --sand-dark: #c2a383;
+            --sand-medium: #dfc4a8;
+            --sand-light: #f5e6d3;
         }
 
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%;
             overflow: hidden; font-family: 'Cormorant Garamond', serif; 
-            color: #fff8f0; 
+            color: #4a3f35; /* Глубокий кофейный цвет для текста */
         }
 
-        /* Анимированный терракотовый фон */
         .bg-gradient {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--terra-dark), var(--terra-medium), var(--terra-light));
+            background: linear-gradient(135deg, var(--sand-dark), var(--sand-medium), var(--sand-light));
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            animation: gradientBG 12s ease infinite;
             z-index: -1;
         }
 
@@ -37,54 +37,37 @@
             position: absolute; width: 100%; height: 100%; 
             display: flex; flex-direction: column; justify-content: center; 
             align-items: center; text-align: center; 
-            transition: opacity 1.2s ease, transform 1.2s ease; 
-            opacity: 0; pointer-events: none; transform: translateY(10px);
+            transition: opacity 1.5s ease; opacity: 0; pointer-events: none;
         }
-        .active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .active { opacity: 1; pointer-events: auto; }
 
-        h1 { font-weight: 300; font-size: 28px; max-width: 80%; line-height: 1.2; margin-bottom: 30px; letter-spacing: 1px; }
+        h1 { font-weight: 300; font-size: 26px; max-width: 80%; line-height: 1.3; margin-bottom: 30px; color: #5d4d3f; }
         
         input { 
-            background: rgba(255, 255, 255, 0.1); /* Легкая подложка, чтобы выделить поле */
-            border: none; 
-            border-bottom: 2px solid #fff; /* Яркая белая линия снизу */
-            border-radius: 8px 8px 0 0; /* Мягкие верхние углы */
-            color: #ffffff; /* Ослепительно белый текст */
-            padding: 15px; 
-            text-align: center; 
-            font-size: 22px; 
-            outline: none; 
-            margin-bottom: 40px; 
-            font-family: inherit; 
-            width: 280px;
+            background: rgba(255, 255, 255, 0.2); border: none; 
+            border-bottom: 2px solid #5d4d3f; color: #4a3f35;
+            padding: 15px; text-align: center; font-size: 22px; 
+            outline: none; margin-bottom: 40px; font-family: inherit; width: 260px;
+            border-radius: 10px 10px 0 0;
         }
+        input::placeholder { color: rgba(74, 63, 53, 0.5); }
 
-        /* Делаем саму надпись "твое имя..." ярче */
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-            font-style: italic;
-            font-size: 18px;
-        }
-        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 85%; max-width: 400px; }
-        
+        /* Кнопки - Квадраты */
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 85%; max-width: 350px; }
         .choice-btn { 
-            padding: 25px 10px; border: 1px solid rgba(255,255,255,0.25); 
-            background: rgba(255,255,255,0.08); backdrop-filter: blur(5px);
-            border-radius: 15px; /* Мягкий прямоугольник */
-            padding: 20px 10px;  /* Чуть меньше высоты, чтобы было аккуратнее */
+            aspect-ratio: 1 / 1; /* Делает кнопку квадратной */
+            border: 1px solid rgba(255,255,255,0.5); 
+            background: rgba(255,255,255,0.25); backdrop-filter: blur(10px);
+            border-radius: 20px; color: #4a3f35; cursor: pointer; 
+            transition: 0.4s; font-size: 19px; font-family: inherit; font-weight: 500;
+            display: flex; align-items: center; justify-content: center;
         }
-            color: white; cursor: pointer; transition: 0.4s; font-size: 18px; font-family: inherit;
-        }
-        .choice-btn:active { background: rgba(255,255,255,0.2); transform: translateY(-5px); }
+        .choice-btn:active { background: rgba(255,255,255,0.4); transform: scale(0.95); }
 
-        /* Уменьшенное парящее изображение */
         .result-img { 
-            width: 50vw; /* Уменьшаем ширину с 70% до 50% от экрана */
-            max-width: 180px; /* Ограничиваем максимальный размер */
-            border-radius: 15px; /* Мягкие уголки */
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12); /* Чуть мягче тень */
-            margin-bottom: 15px; /* Уменьшаем отступ снизу с 25px до 15px */
-            animation: float 4s ease-in-out infinite;
+            width: 50vw; max-width: 180px; border-radius: 15px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08); 
+            margin-bottom: 20px; animation: float 4s ease-in-out infinite;
         }
 
         @keyframes float {
@@ -92,34 +75,34 @@
             50% { transform: translateY(-10px); }
         }
 
-        .result-text { 
-            font-style: italic; font-size: 22px; max-width: 80%; 
-            line-height: 1.5; margin-bottom: 40px; font-weight: 300;
-        }
+        .result-text { font-style: italic; font-size: 21px; max-width: 80%; line-height: 1.5; margin-bottom: 20px; }
 
         .btn-main { 
-            background: rgba(255,255,255,0.9); color: var(--terra-dark); 
-            padding: 14px 35px; border-radius: 30px; 
-            text-decoration: none; font-weight: 500; font-size: 16px;
+            background: #5d4d3f; color: #f5e6d3; 
+            padding: 14px 30px; border-radius: 30px; 
+            text-decoration: none; font-weight: 500; font-size: 15px;
             cursor: pointer; border: none; transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .btn-outline {
-            background: transparent; border: 1px solid white; color: white;
-            margin-top: 15px; padding: 10px 25px; font-size: 14px;
+            background: transparent; border: 1px solid #5d4d3f; color: #5d4d3f;
+            margin-top: 10px; padding: 10px 20px; font-size: 13px;
         }
 
-        .footer-note { font-size: 14px; opacity: 0.7; margin-top: 30px; max-width: 70%; line-height: 1.4; }
+        /* Финальная фраза */
+        .final-phrase {
+            font-size: 24px; line-height: 1.6; max-width: 85%;
+            font-style: italic; color: #4a3f35;
+        }
     </style>
 </head>
 <body>
 
     <div class="bg-gradient"></div>
 
-    <audio id="bgMusic" loop src="https://assets.mixkit.co/music/preview/mixkit-ambient-meditation-2842.mp3"></audio>
+    <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
 
     <div class="screen active" id="screen1">
-        <h1>Прислушайся к себе...<br>Что ты чувствуешь сейчас?</h1>
+        <h1>Прислушайся к себе...<br>Как мне называть тебя?</h1>
         <input type="text" id="userName" placeholder="твое имя...">
         <button class="btn-main" onclick="goToChoices()">Начать погружение</button>
     </div>
@@ -137,35 +120,38 @@
     <div class="screen" id="screen3">
         <img id="resImg" class="result-img" src="">
         <p class="result-text" id="resText"></p>
-        
-        <button class="btn-main" onclick="backToChoices()">Прислушаться еще раз...</button>
-        
-        <p class="footer-note">Чувствуешь, как меняется пространство, когда в нем появляется смысл?</p>
-        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main btn-outline">Создать свою цифровую историю ✨</a>
+        <button class="btn-main" onclick="backToChoices()">Слушать сердце дальше...</button>
+        <button class="btn-outline" onclick="showFinal()">Подведём итоги ? ✨</button>
+    </div>
+
+    <div class="screen" id="screen4">
+        <p class="final-phrase" id="finalPhrase"></p>
+        <br><br>
+        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main">Создать свою цифровую историю ✨</a>
+        <p onclick="location.reload()" style="font-size: 12px; margin-top: 30px; opacity: 0.6; cursor: pointer;">Вернуться в начало</p>
     </div>
 
     <script>
         let name = "";
         const results = {
-            tenderness: { img: "img/11.png", text: "Нежность - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах." },
-            joy: { img: "img/22.png", text: "Радость - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
-            power: { img: "img/33.png", text: "Сила - это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
-            character: { img: "img/44.png", text: "Характер - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
+            tenderness: { img: "img/11.png", text: "нежность - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах." },
+            joy: { img: "img/22.png", text: "радость - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
+            power: { img: "img/33.png", text: "сила - это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
+            character: { img: "img/44.png", text: "характер - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
         };
 
         function goToChoices() {
             name = document.getElementById('userName').value.trim();
             switchScreen('screen1', 'screen2');
             const music = document.getElementById('bgMusic');
-            music.volume = 0.8;
+            music.volume = 0.6;
             music.play();
         }
 
         function showResult(type) {
             const data = results[type];
-            const greeting = name ? name + ", " : "";
             document.getElementById('resImg').src = data.img;
-            document.getElementById('resText').innerHTML = greeting + data.text;
+            document.getElementById('resText').innerHTML = (name ? name + ", " : "") + data.text;
             switchScreen('screen2', 'screen3');
         }
 
@@ -173,11 +159,15 @@
             switchScreen('screen3', 'screen2');
         }
 
+        function showFinal() {
+            const final = name ? name + ", помни: <br>" : "";
+            document.getElementById('finalPhrase').innerHTML = final + "Твоя сила — в твоей многогранности. Нежность не мешает твердости, а радость лишь подсвечивает твой характер. Ты — целая вселенная, в которой всегда достаточно света, чтобы идти вперед.";
+            switchScreen('screen3', 'screen4');
+        }
+
         function switchScreen(from, to) {
             document.getElementById(from).classList.remove('active');
-            setTimeout(() => {
-                document.getElementById(to).classList.add('active');
-            }, 600);
+            setTimeout(() => { document.getElementById(to).classList.add('active'); }, 700);
         }
     </script>
 </body>
