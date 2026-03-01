@@ -37,9 +37,9 @@
             position: absolute; width: 100%; height: 100%; 
             display: flex; flex-direction: column; justify-content: center; 
             align-items: center; text-align: center; 
-            transition: opacity 1.2s ease; opacity: 0; pointer-events: none;
+            transition: opacity 0.8s ease; opacity: 0; pointer-events: none;
         }
-        .active { opacity: 1; pointer-events: auto; }
+        .active { opacity: 1 !important; pointer-events: auto !important; }
 
         h1 { font-weight: 300; font-size: 26px; max-width: 80%; line-height: 1.3; margin-bottom: 30px; }
         
@@ -50,7 +50,6 @@
             outline: none; margin-bottom: 40px; font-family: inherit; width: 260px;
             border-radius: 10px 10px 0 0;
         }
-        input::placeholder { color: rgba(74, 63, 53, 0.5); }
 
         .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 85%; max-width: 350px; }
         
@@ -62,7 +61,6 @@
             transition: 0.4s; font-size: 19px; font-family: inherit; font-weight: 500;
             display: flex; align-items: center; justify-content: center;
         }
-        .choice-btn:active { background: rgba(255,255,255,0.4); transform: scale(0.95); }
 
         .result-img { 
             width: 50vw; max-width: 180px; border-radius: 15px; 
@@ -90,10 +88,7 @@
             cursor: pointer; font-family: inherit;
         }
 
-        .final-phrase {
-            font-size: 24px; line-height: 1.6; max-width: 85%;
-            font-style: italic; color: var(--text-main);
-        }
+        .final-phrase { font-size: 24px; line-height: 1.6; max-width: 85%; font-style: italic; }
     </style>
 </head>
 <body>
@@ -103,7 +98,7 @@
     <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
 
     <div class="screen active" id="screen1">
-        <h1>Прислушайся к себе...<br>Что чувствуешь сейчас?</h1>
+        <h1>Прислушайся к себе...<br>Как мне называть тебя?</h1>
         <input type="text" id="userName" placeholder="твое имя...">
         <button class="btn-main" onclick="goToChoices()">Начать погружение</button>
     </div>
@@ -128,12 +123,70 @@
 
     <div class="screen" id="screen4">
         <p class="final-phrase" id="finalPhrase"></p>
-        <button class="btn-main" onclick="shareMagic()" style="margin-top:20px;">Передать  другу</button>
+        <button class="btn-main" onclick="shareMagic()" style="margin-top:20px;">Поделиться с друзьями ✨</button>
         <br>
-        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main" style="background:#8e735b;">Хотите магию ? Тогда вам точно ко мне ✨</a>
+        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main" style="background:#8e735b;">За магией ко мне ✨</a>
         <p onclick="location.reload()" style="font-size: 12px; margin-top: 30px; opacity: 0.6; cursor: pointer;">Вернуться в начало</p>
     </div>
 
     <script>
         let name = "";
-        const results
+        const results = {
+            tenderness: { img: "img/11.png", text: "НЕЖНОСТЬ - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах." },
+            joy: { img: "img/22.png", text: "РАДОСТЬ - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
+            power: { img: "img/33.png", text: "СИЛА - это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
+            character: { img: "img/44.png", text: "ХАРАКТЕР - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
+        };
+
+        function goToChoices() {
+            name = document.getElementById('userName').value.trim();
+            switchScreen('screen1', 'screen2');
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.6;
+            music.play().catch(e => console.log("Музыка ждет клика"));
+        }
+
+        function showResult(type) {
+            const data = results[type];
+            document.getElementById('resImg').src = data.img;
+            document.getElementById('resText').innerHTML = (name ? name + ", " : "") + data.text;
+            switchScreen('screen2', 'screen3');
+        }
+
+        function backToChoices() {
+            switchScreen('screen3', 'screen2');
+        }
+
+        function showFinal() {
+            const finalStart = name ? name + ", помни: <br>" : "";
+            document.getElementById('finalPhrase').innerHTML = finalStart + "Твоя сила — в твоей многогранности. Нежность не мешает твердости, а радость лишь подсвечивает твой характер. Ты — целая вселенная.";
+            switchScreen('screen3', 'screen4');
+        }
+
+        function shareMagic() {
+            if (navigator.share) {
+                navigator.share({ title: 'Состояние', text: 'Посмотри...', url: window.location.href });
+            } else {
+                alert("Скопируйте ссылку из браузера ✨");
+            }
+        }
+
+        function switchScreen(fromId, toId) {
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            
+            from.classList.remove('active');
+            
+            setTimeout(() => {
+                // Скрываем старый экран совсем
+                from.style.display = 'none'; 
+                // Показываем новый
+                to.style.display = 'flex';
+                setTimeout(() => {
+                    to.classList.add('active');
+                }, 50);
+            }, 800);
+        }
+    </script>
+</body>
+</html>
