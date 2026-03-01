@@ -118,6 +118,9 @@
     </div>
 
     <div class="screen" id="screen3">
+        <button class="btn-main" onclick="shareMagic()">Поделиться с друзьями ✨</button>
+        <button class="btn-outline" onclick="backToChoices()">Слушать сердце дальше...</button>
+        <button class="btn-outline" style="border:none" onclick="showFinal()">Собрать целостность</button>
         <img id="resImg" class="result-img" src="">
         <p class="result-text" id="resText"></p>
         <button class="btn-main" onclick="backToChoices()">Слушать сердце дальше...</button>
@@ -125,6 +128,7 @@
     </div>
 
     <div class="screen" id="screen4">
+        <button class="btn-outline" onclick="shareMagic()">Поделиться с друзьями ✨</button>
         <p class="final-phrase" id="finalPhrase"></p>
         <br><br>
         <a href="https://t.me/nekyhnya" target="_blank" class="btn-main">Нужна магия? Я всегда на связи ✨</a>
@@ -170,5 +174,16 @@
             setTimeout(() => { document.getElementById(to).classList.add('active'); }, 700);
         }
     </script>
-</body>
+        function shareMagic() {
+        if (navigator.share) {
+        navigator.share({
+            title: 'Мое состояние сегодня',
+            text: 'Посмотри, как красиво... Я нашла это здесь:',
+            url: window.location.href
+        }).catch(console.error);
+        } else {
+        alert("Скопируйте ссылку из браузера и отправьте её близким ✨");
+        }
+        }
+    </script> </body>
 </html>
