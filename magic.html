@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Твое состояние | Интерактив</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Georgia', serif; background: #000; color: white; }
+        
+        .screen { 
+            position: absolute; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; text-align: center; transition: 0.8s opacity ease; opacity: 0; pointer-events: none;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+        }
+        .active { opacity: 1; pointer-events: auto; }
+
+        h1 { font-weight: 300; font-size: 24px; max-width: 80%; line-height: 1.4; margin-bottom: 20px; }
+        
+        /* Поле ввода имени */
+        input { 
+            background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.5);
+            color: white; padding: 10px; text-align: center; font-size: 18px; outline: none; margin-bottom: 30px;
+        }
+
+        /* Кнопки выбора */
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; max-width: 350px; }
+        .choice-btn { 
+            padding: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);
+            border-radius: 15px; color: white; cursor: pointer; transition: 0.3s; font-size: 16px;
+        }
+        .choice-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+
+        /* Экран результата */
+        .result-img { width: 85vw; max-width: 320px; border-radius: 20px; box-shadow: 0 0 30px rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .result-text { font-style: italic; font-size: 18px; max-width: 85%; line-height: 1.6; margin-bottom: 30px; }
+
+        .btn-main { 
+            background: white; color: black; padding: 15px 30px; border-radius: 50px; 
+            text-decoration: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; border: none;
+        }
+        .btn-tg { background: #0088cc; color: white; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+
+    <div class="screen active" id="screen1">
+        <h1>Мир суетится снаружи...<br>А как мне называть тебя здесь?</h1>
+        <input type="text" id="userName" placeholder="Твое имя (можно пропустить)">
+        <button class="btn-main" onclick="goToChoices()">Заглянуть в себя</button>
+    </div>
+
+    <div class="screen" id="screen2">
+        <h1>Выбери то, что откликается в сердце прямо сейчас:</h1>
+        <div class="choice-grid">
+            <button class="choice-btn" onclick="showResult('tenderness')">Нежность</button>
+            <button class="choice-btn" onclick="showResult('joy')">Радость</button>
+            <button class="choice-btn" onclick="showResult('power')">Сила</button>
+            <button class="choice-btn" onclick="showResult('character')">Характер</button>
+        </div>
+    </div>
+
+    <div class="screen" id="screen3">
+        <img id="resImg" class="result-img" src="">
+        <p class="result-text" id="resText"></p>
+        
+        <button class="btn-main" onclick="shareMagic()">Поделиться светом ✨</button>
+        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main btn-tg">Хочу такую же магию ✨</a>
+        <p onclick="location.reload()" style="font-size: 12px; opacity: 0.5; cursor: pointer; margin-top: 10px;">Начать заново</p>
+    </div>
+
+    <script>
+        let name = "";
+        const results = {
+            tenderness: {
+                img: "img/11.png",
+                text: "Это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах."
+            },
+            joy: {
+                img: "img/22.png",
+                text: "Это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил."
+            },
+            power: {
+                img: "img/33.png",
+                text: "Это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь."
+            },
+            character: {
+                img: "img/44.png",
+                text: "Это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра."
+            }
+        };
+
+        function goToChoices() {
+            name = document.getElementById('userName').value.trim();
+            document.getElementById('screen1').classList.remove('active');
+            document.getElementById('screen2').classList.add('active');
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.3;
+            music.play();
+        }
+
+        function showResult(type) {
+            const data = results[type];
+            const greeting = name ? name + ", знай: " : "";
+            
+            document.getElementById('resImg').src = data.img;
+            document.getElementById('resText').innerHTML = greeting + data.text;
+            
+            document.getElementById('screen2').classList.remove('active');
+            document.getElementById('screen3').classList.add('active');
+        }
+
+        function shareMagic() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Мое состояние сегодня',
+                    text: 'Посмотри, какой глубокий интерактив я нашла...',
+                    url: window.location.href
+                });
+            } else {
+                alert("Скопируйте ссылку и отправьте друзьям!");
+            }
+        }
+    </script>
+</body>
+</html>
