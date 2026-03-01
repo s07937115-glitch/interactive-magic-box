@@ -102,7 +102,7 @@
     <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
 
     <div class="screen active" id="screen1">
-        <h1>Прислушайся к себе...<br>Как мне называть тебя?</h1>
+        <h1>Прислушайся к себе...<br>Что ты чувствуешь сейчас?</h1>
         <input type="text" id="userName" placeholder="твое имя...">
         <button class="btn-main" onclick="goToChoices()">Начать погружение</button>
     </div>
@@ -127,17 +127,17 @@
     <div class="screen" id="screen4">
         <p class="final-phrase" id="finalPhrase"></p>
         <br><br>
-        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main">Создать свою цифровую историю ✨</a>
+        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main">Нужна магия? Я всегда на связи ✨</a>
         <p onclick="location.reload()" style="font-size: 12px; margin-top: 30px; opacity: 0.6; cursor: pointer;">Вернуться в начало</p>
     </div>
 
     <script>
         let name = "";
         const results = {
-            tenderness: { img: "img/11.png", text: "нежность - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах." },
-            joy: { img: "img/22.png", text: "радость - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
-            power: { img: "img/33.png", text: "сила - это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
-            character: { img: "img/44.png", text: "характер - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
+            tenderness: { img: "img/11.png", text: "НЕЖНОСТЬ - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится у тебя на глазах." },
+            joy: { img: "img/22.png", text: "РАДОСТЬ - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
+            power: { img: "img/33.png", text: "СИЛА- это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
+            character: { img: "img/44.png", text: "ХАРАКТЕР - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
         };
 
         function goToChoices() {
