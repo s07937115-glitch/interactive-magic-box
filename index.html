@@ -19,6 +19,7 @@
             margin: 0; padding: 0; height: 100%; width: 100%;
             overflow: hidden; font-family: 'Cormorant Garamond', serif; 
             color: var(--text-main); background: var(--sand-dark);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .bg-gradient {
@@ -41,31 +42,32 @@
             align-items: center; text-align: center; 
             transition: opacity 1s ease; 
             opacity: 0; pointer-events: none;
+            padding: 20px; box-sizing: border-box;
         }
         .active { opacity: 1; pointer-events: auto; }
 
-        h1 { font-weight: 300; font-size: 26px; max-width: 85%; line-height: 1.3; margin-bottom: 30px; }
+        h1 { font-weight: 300; font-size: 28px; line-height: 1.3; margin-bottom: 35px; }
         
         input { 
             background: rgba(255, 255, 255, 0.2); border: none; 
             border-bottom: 2px solid var(--text-main); color: var(--text-main);
-            padding: 15px; text-align: center; font-size: 22px; 
-            outline: none; margin-bottom: 40px; font-family: inherit; width: 260px;
+            padding: 15px; text-align: center; font-size: 24px; 
+            outline: none; margin-bottom: 45px; font-family: inherit; width: 85%; max-width: 300px;
         }
 
-        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 85%; max-width: 350px; }
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 360px; }
         
         .choice-btn { 
             aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,0.4); 
-            background: rgba(255,255,255,0.25); backdrop-filter: blur(5px);
-            border-radius: 20px; color: var(--text-main); cursor: pointer; 
-            transition: 0.3s; font-size: 19px; font-family: inherit;
+            background: rgba(255,255,255,0.25); backdrop-filter: blur(8px);
+            border-radius: 25px; color: var(--text-main); cursor: pointer; 
+            transition: 0.3s; font-size: 20px; font-family: inherit;
         }
 
         .result-img { 
-            width: 60vw; max-width: 220px; border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            margin-bottom: 20px; 
+            width: 70vw; max-width: 260px; border-radius: 25px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+            margin-bottom: 25px; 
             animation: float 5s ease-in-out infinite, fadeIn 1.5s ease-out;
         }
 
@@ -76,43 +78,52 @@
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-18px); }
         }
 
-        .result-text { font-style: italic; font-size: 21px; max-width: 80%; line-height: 1.5; margin-bottom: 25px; }
+        .result-text { font-style: italic; font-size: 22px; max-width: 90%; line-height: 1.5; margin-bottom: 30px; }
 
         .btn-main { 
             background: var(--accent-btn); color: #f5e6d3; 
-            padding: 16px 35px; border-radius: 35px; 
-            text-decoration: none; font-weight: 500; font-size: 16px;
+            padding: 20px 45px; border-radius: 45px; 
+            text-decoration: none; font-weight: 500; font-size: 18px;
             cursor: pointer; border: none; transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 12px;
-            font-family: inherit;
-            display: inline-block;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            margin-bottom: 15px; font-family: inherit;
+            width: 300px; display: block;
         }
 
-        .btn-secondary {
-            background: var(--secondary-btn);
-        }
+        .btn-secondary { background: var(--secondary-btn); }
 
         .btn-outline {
-            background: transparent; border: 1px solid var(--accent-btn); color: var(--accent-btn);
-            padding: 12px 25px; font-size: 14px; border-radius: 25px;
-            cursor: pointer; font-family: inherit; margin-top: 5px;
+            background: transparent; border: 2px solid var(--accent-btn); color: var(--accent-btn);
+            padding: 16px 35px; font-size: 17px; border-radius: 35px;
+            cursor: pointer; font-family: inherit; margin-top: 10px; width: 300px;
         }
 
-        .final-phrase { font-size: 24px; line-height: 1.6; max-width: 85%; font-style: italic; margin-bottom: 30px; }
+        .final-phrase { font-size: 26px; line-height: 1.6; max-width: 90%; font-style: italic; margin-bottom: 40px; }
+
+        #toast {
+            position: fixed; top: 20px; background: var(--accent-btn);
+            color: white; padding: 12px 25px; border-radius: 25px;
+            opacity: 0; transition: 0.5s; z-index: 1000; pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
 
     <div class="bg-gradient"></div>
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div id="toast">Ссылка скопирована в буфер ✨</div>
 
     <div class="screen active" id="screen1">
         <h1>Прислушайся к себе...<br>Что ты чувствуешь сейчас?</h1>
         <input type="text" id="userName" placeholder="твое имя..." autocomplete="off">
-        <button class="btn-main" onclick="goToChoices()">Начать погружение</button>
+        <button class="btn-main" onclick="startExperience()">Начать погружение</button>
     </div>
 
     <div class="screen" id="screen2">
@@ -136,44 +147,36 @@
     <div class="screen" id="screen4">
         <p class="final-phrase" id="finalPhrase"></p>
         <button class="btn-main" onclick="shareMagic()">Поделиться с друзьями ✨</button>
-        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main btn-secondary">Создать свою историю ✨</a>
-        <br>
-        <button class="btn-outline" style="margin-top: 30px; border-color: rgba(74, 63, 53, 0.5);" onclick="location.reload()">
-            Вернуться в начало
-        </button>
+        <a href="https://t.me/nekyhnya" target="_blank" class="btn-main btn-secondary">хочешь создать свою историю?</a>
+        <button class="btn-outline" style="margin-top: 40px; border-color: rgba(74, 63, 53, 0.4);" onclick="location.reload()">Вернуться в начало</button>
     </div>
 
     <script>
-        const imgs = ["img/11.png", "img/22.png", "img/33.png", "img/44.png"];
-        imgs.forEach(s => { const i = new Image(); i.src = s; });
-
         let name = "";
+        const audio = document.getElementById('bgMusic');
+
         const results = {
             tenderness: { img: "img/11.png", text: "НЕЖНОСТЬ - это не слабость. Это смелость оставить сердце открытым, даже когда мир рушится." },
-            joy: { img: "img/22.png", text: "РАДОСТЬ -это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
+            joy: { img: "img/22.png", text: "РАДОСТЬ - это не вечный праздник. Это способность заметить блик солнца в луже, когда ты уже без сил." },
             power: { img: "img/33.png", text: "СИЛА - это не стальной кулак. Это умение встать на один раз больше, чем ты падаешь." },
             character: { img: "img/44.png", text: "ХАРАКТЕР - это не упрямство. Это верность своим ценностям, даже когда ты идёшь против ветра." }
         };
 
-        function goToChoices() {
+        function startExperience() {
             name = document.getElementById('userName').value.trim();
+            audio.play().catch(e => console.log("Музыка активируется после клика"));
             switchScreen('screen1', 'screen2');
         }
 
         function showResult(type) {
             const data = results[type];
             const imgEl = document.getElementById('resImg');
-            imgEl.style.animation = 'none';
-            imgEl.offsetHeight; 
-            imgEl.style.animation = null;
             imgEl.src = data.img;
             document.getElementById('resText').innerHTML = (name ? name + ", " : "") + data.text;
             switchScreen('screen2', 'screen3');
         }
 
-        function backToChoices() {
-            switchScreen('screen3', 'screen2');
-        }
+        function backToChoices() { switchScreen('screen3', 'screen2'); }
 
         function showFinal() {
             const finalStart = name ? name + ", помни: <br>" : "";
@@ -182,15 +185,29 @@
         }
 
         function shareMagic() {
+            const url = window.location.href;
             if (navigator.share) {
                 navigator.share({
-                    title: 'Мое состояние',
-                    text: 'Прислушайся к себе... Какое твоё состояние сегодня?',
-                    url: window.location.href
-                }).catch(console.error);
+                    title: 'Магия Потока',
+                    text: 'Узнай свое состояние сегодня ✨',
+                    url: url
+                }).catch(() => copyToClipboard(url));
             } else {
-                alert("Скопируйте ссылку и отправьте другу ✨");
+                copyToClipboard(url);
             }
+        }
+
+        function copyToClipboard(text) {
+            const input = document.createElement('textarea');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            
+            const toast = document.getElementById('toast');
+            toast.style.opacity = "1";
+            setTimeout(() => { toast.style.opacity = "0"; }, 2500);
         }
 
         function switchScreen(fromId, toId) {
