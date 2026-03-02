@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Оракул Таро | Магия Потока</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
     <style>
@@ -12,22 +12,19 @@
             --sand-light: #f5e6d3;
             --text-main: #4a3f35;
             --accent-gold: #d4af37;
+            --tg-blue: #0088cc;
         }
 
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%;
             overflow: hidden; font-family: 'Cormorant Garamond', serif; 
-            color: var(--text-main);
-            background: var(--sand-dark);
+            color: var(--text-main); background: var(--sand-dark);
         }
 
-        /* Живой фон как в первом проекте */
         .bg-gradient {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--sand-dark), var(--sand-medium), var(--sand-light));
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            z-index: -1;
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite; z-index: -1;
         }
 
         @keyframes gradientBG {
@@ -38,72 +35,66 @@
 
         .container {
             display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; height: 100%; text-align: center;
-            padding: 20px; box-sizing: border-box;
+            justify-content: flex-start; height: 100%; text-align: center;
+            padding: 15px; box-sizing: border-box;
         }
 
-        h1 { font-weight: 300; font-size: 26px; margin-bottom: 20px; letter-spacing: 1px; }
+        /* Уменьшили отступ сверху, чтобы всё поднялось */
+        h1 { font-weight: 300; font-size: 24px; margin: 10px 0 15px 0; letter-spacing: 1px; }
 
-        /* Карта с эффектом появления */
+        /* Карта стала чуть компактнее для маленьких экранов */
         .card-container {
-            position: relative; width: 260px; height: 430px;
+            position: relative; width: 240px; height: 380px;
             opacity: 0; transform: scale(0.8) rotateY(180deg);
-            transition: 1.5s all cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 25px;
+            transition: 1.2s all cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 15px;
         }
 
-        .card-container.active {
-            opacity: 1; transform: scale(1) rotateY(0deg);
-        }
+        .card-container.active { opacity: 1; transform: scale(1) rotateY(0deg); }
 
         .card-img {
-            width: 100%; height: 100%; border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            border: 4px solid var(--accent-gold);
-            object-fit: cover;
+            width: 100%; height: 100%; border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 3px solid var(--accent-gold); object-fit: cover;
         }
 
-        /* Сияние вокруг карты */
         .card-glow {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 15px; box-shadow: 0 0 30px var(--accent-gold);
-            opacity: 0.5; animation: pulse 3s infinite alternate;
-            z-index: -1;
+            border-radius: 12px; box-shadow: 0 0 25px var(--accent-gold);
+            opacity: 0.4; animation: pulse 3s infinite alternate; z-index: -1;
         }
 
-        @keyframes pulse {
-            from { transform: scale(1); opacity: 0.3; }
-            to { transform: scale(1.05); opacity: 0.6; }
-        }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
 
         .meaning {
-            font-size: 22px; font-style: italic; line-height: 1.4;
-            max-width: 90%; margin-bottom: 30px; opacity: 0;
-            transition: 2s ease;
+            font-size: 19px; font-style: italic; line-height: 1.3;
+            max-width: 90%; margin-bottom: 20px; opacity: 0; transition: 1.5s;
         }
         .meaning.show { opacity: 1; }
 
         /* Кнопки */
         .btn-magic {
             background: var(--text-main); color: var(--sand-light);
-            padding: 18px 0; border-radius: 40px; border: none;
-            font-family: inherit; font-size: 18px; cursor: pointer;
-            width: 85%; max-width: 280px; margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;
+            padding: 16px 0; border-radius: 40px; border: none;
+            font-family: inherit; font-size: 17px; cursor: pointer;
+            width: 85%; max-width: 280px; margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s;
             display: block; text-decoration: none;
         }
 
+        .btn-tg { background: var(--tg-blue) !important; color: white !important; }
+
         .btn-outline {
-            background: transparent; border: 1.5px solid var(--text-main);
-            color: var(--text-main); padding: 12px 0; border-radius: 40px;
+            background: transparent; border: 1px solid var(--text-main);
+            color: var(--text-main); padding: 10px 0; border-radius: 40px;
             width: 80%; max-width: 260px; font-family: inherit;
-            cursor: pointer; text-decoration: none; font-size: 16px;
+            cursor: pointer; text-decoration: none; font-size: 15px; margin-bottom: 8px;
         }
 
         #toast {
             position: fixed; top: 20px; background: var(--text-main);
-            color: white; padding: 10px 20px; border-radius: 20px;
-            opacity: 0; transition: 0.5s; z-index: 1000;
+            color: white; padding: 8px 15px; border-radius: 20px;
+            opacity: 0; transition: 0.5s; z-index: 1000; font-size: 14px;
         }
     </style>
 </head>
@@ -121,67 +112,57 @@
         </div>
 
         <p class="meaning" id="msgText">
-            «Звезда — это твой внутренний компас. <br>Сегодня свет ведет тебя туда, где рождается твоя истинная сила...»
+            «Звезда — это твой внутренний компас. <br>Твой свет ведет тебя туда, где рождается твоя истинная сила...»
         </p>
 
         <button class="btn-magic" id="startBtn" onclick="revealMagic()">Получить послание</button>
         
         <div id="controls" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-            <button class="btn-magic" onclick="shareMagic()">Поделиться магией ✨</button>
+            <button class="btn-magic btn-tg" onclick="shareToTelegram()">Отправить другу в Telegram ✈️</button>
+            <button class="btn-outline" onclick="shareMagic()">Другие способы поделиться ✨</button>
             <a href="index.html" class="btn-outline">Вернуться к состояниям</a>
-            <button class="btn-outline" style="margin-top: 10px; border: none;" onclick="location.reload()">Другой вопрос</button>
+            <button class="btn-outline" style="border: none; font-size: 13px;" onclick="location.reload()">Другой вопрос</button>
         </div>
     </div>
 
     <script>
         function revealMagic() {
-            // Анимация заголовка и кнопки
             document.getElementById('headerText').innerText = "Твое Послание";
             document.getElementById('startBtn').style.display = "none";
-            
-            // Появление карты и текста
             document.getElementById('cardBox').classList.add('active');
             
             setTimeout(() => {
                 document.getElementById('msgText').classList.add('show');
                 document.getElementById('controls').style.display = "flex";
-            }, 1000);
+            }, 800);
+        }
+
+        function shareToTelegram() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent("Посмотри, какое послание я получила от звезд... ✨");
+            window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
         }
 
         function shareMagic() {
-            // Данные для отправки
-            const shareData = {
-                title: 'Послание Звезд для тебя',
-                text: 'Посмотри, какую карту я вытянула сегодня... ✨',
-                url: window.location.href
-            };
-
-            // Вчерашний метод: вызываем ТОЛЬКО системное меню
             if (navigator.share) {
-                navigator.share(shareData)
-                .then(() => console.log('Успешно!'))
-                .catch((error) => {
-                    // Если это не отмена пользователем, тогда покажем уведомление
-                    if (error.name !== 'AbortError') {
-                        alert("Скопируйте ссылку из адресной строки и отправьте другу ✨");
-                    }
-                });
+                navigator.share({
+                    title: 'Послание Звезд',
+                    text: 'Узнай свое послание от звезд... ✨',
+                    url: window.location.href
+                }).catch(() => copyToClipboard());
             } else {
-                // Если браузер совсем старый
-                alert("Ваш браузер не поддерживает кнопку 'Поделиться'. Просто скопируйте ссылку ✨");
+                copyToClipboard();
             }
         }
 
-        function copyToClipboard(text) {
+        function copyToClipboard() {
             const el = document.createElement('textarea');
-            el.value = text;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
+            el.value = window.location.href;
+            document.body.appendChild(el); el.select();
+            document.execCommand('copy'); document.body.removeChild(el);
             const toast = document.getElementById('toast');
             toast.style.opacity = "1";
-            setTimeout(() => { toast.style.opacity = "0"; }, 2500);
+            setTimeout(() => { toast.style.opacity = "0"; }, 2000);
         }
     </script>
 </body>
