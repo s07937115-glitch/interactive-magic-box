@@ -7,162 +7,150 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
     <style>
         :root {
-            --sand-dark: #c2a383;
-            --sand-medium: #dfc4a8;
-            --sand-light: #f5e6d3;
-            --text-main: #4a3f35;
-            --accent-gold: #d4af37;
-            --tg-blue: #0088cc;
+            --sand-dark: #c2a383; --sand-medium: #dfc4a8; --sand-light: #f5e6d3;
+            --text-main: #4a3f35; --accent-gold: #d4af37; --tg-blue: #0088cc;
         }
 
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; font-family: 'Cormorant Garamond', serif; 
-            color: var(--text-main); background: var(--sand-dark);
+            overflow: hidden; font-family: 'Cormorant Gramamond', serif; 
+            color: var(--text-main); background: #1a1a1a;
         }
 
         .bg-gradient {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--sand-dark), var(--sand-medium), var(--sand-light));
-            background-size: 400% 400%; animation: gradientBG 15s ease infinite; z-index: -1;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            background: linear-gradient(135deg, #1a1a1a, #2c241e, #1a1a1a);
+            transition: 2.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: -1;
         }
 
         .container {
             display: flex; flex-direction: column; align-items: center; 
-            justify-content: flex-start; height: 100%; text-align: center;
-            padding: 15px; box-sizing: border-box;
+            justify-content: center; height: 100%; text-align: center;
+            padding: 20px; box-sizing: border-box;
         }
 
-        /* Уменьшили отступ сверху, чтобы всё поднялось */
-        h1 { font-weight: 300; font-size: 24px; margin: 10px 0 15px 0; letter-spacing: 1px; }
+        h1 { font-weight: 300; font-size: 28px; margin-bottom: 10px; letter-spacing: 2px; color: var(--sand-light); transition: 1.5s; }
 
-        /* Карта стала чуть компактнее для маленьких экранов */
+        #welcome-screen { display: flex; flex-direction: column; align-items: center; z-index: 10; transition: 1s; }
+        .mystic-text { font-style: italic; color: var(--sand-medium); margin-bottom: 40px; font-size: 20px; line-height: 1.5; }
+
         .card-container {
-            position: relative; width: 240px; height: 380px;
-            opacity: 0; transform: scale(0.8) rotateY(180deg);
-            transition: 1.2s all cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 15px;
+            display: none; position: relative; width: 240px; height: 380px;
+            perspective: 1000px; margin-bottom: 15px;
         }
-
-        .card-container.active { opacity: 1; transform: scale(1) rotateY(0deg); }
-
         .card-img {
             width: 100%; height: 100%; border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.5);
             border: 3px solid var(--accent-gold); object-fit: cover;
+            transform: rotateY(180deg); transition: 1.8s;
         }
-
-        .card-glow {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 12px; box-shadow: 0 0 25px var(--accent-gold);
-            opacity: 0.4; animation: pulse 3s infinite alternate; z-index: -1;
-        }
-
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
+        .card-container.active .card-img { transform: rotateY(0deg); }
 
         .meaning {
-            font-size: 19px; font-style: italic; line-height: 1.3;
-            max-width: 90%; margin-bottom: 20px; opacity: 0; transition: 1.5s;
+            font-size: 19px; font-style: italic; line-height: 1.4;
+            max-width: 90%; margin: 15px 0; display: none; color: var(--text-main);
+            animation: fadeIn 2.5s forwards;
         }
-        .meaning.show { opacity: 1; }
 
-        /* Кнопки */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .btn-magic {
+            background: var(--accent-gold); color: #fff;
+            padding: 18px 35px; border-radius: 50px; border: none;
+            font-family: inherit; font-size: 19px; cursor: pointer;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); transition: 0.4s;
+            animation: pulse-button 2s infinite;
+        }
+        @keyframes pulse-button {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-small {
             background: var(--text-main); color: var(--sand-light);
-            padding: 16px 0; border-radius: 40px; border: none;
-            font-family: inherit; font-size: 17px; cursor: pointer;
-            width: 85%; max-width: 280px; margin-bottom: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s;
-            display: block; text-decoration: none;
+            padding: 14px 0; border-radius: 30px; border: none;
+            width: 85%; max-width: 280px; margin-bottom: 10px; font-family: inherit; font-size: 16px;
         }
-
-        .btn-tg { background: var(--tg-blue) !important; color: white !important; }
-
-        .btn-outline {
-            background: transparent; border: 1px solid var(--text-main);
-            color: var(--text-main); padding: 10px 0; border-radius: 40px;
-            width: 80%; max-width: 260px; font-family: inherit;
-            cursor: pointer; text-decoration: none; font-size: 15px; margin-bottom: 8px;
-        }
-
-        #toast {
-            position: fixed; top: 20px; background: var(--text-main);
-            color: white; padding: 8px 15px; border-radius: 20px;
-            opacity: 0; transition: 0.5s; z-index: 1000; font-size: 14px;
-        }
+        .btn-tg { background: var(--tg-blue) !important; }
+        .btn-link { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 10px 0; width: 80%; border-radius: 30px; text-decoration: none; font-size: 14px; display: block; margin-top: 5px;}
     </style>
 </head>
 <body>
 
-    <div class="bg-gradient"></div>
-    <div id="toast">Ссылка скопирована ✨</div>
+    <audio id="magicAudio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="bg-gradient" id="bg"></div>
 
     <div class="container">
-        <h1 id="headerText">Прислушайся к звездам...</h1>
-
-        <div class="card-container" id="cardBox">
-            <div class="card-glow"></div>
-            <img src="img/thestar.png" class="card-img" alt="Карта">
+        <div id="welcome-screen">
+            <h1>Шепот Вселенной</h1>
+            <p class="mystic-text">Сфокусируйся на вопросе... <br> Ответ уже здесь, в потоке звезд.</p>
+            <button class="btn-magic" onclick="startOracle()">Приоткрыть завесу</button>
         </div>
 
-        <p class="meaning" id="msgText">
-            «Звезда — это твой внутренний компас. <br>Твой свет ведет тебя туда, где рождается твоя истинная сила...»
-        </p>
+        <div class="card-container" id="cardBox">
+            <img src="" class="card-img" id="mainCard" alt="Карта Таро">
+        </div>
 
-        <button class="btn-magic" id="startBtn" onclick="revealMagic()">Получить послание</button>
-        
+        <p class="meaning" id="msgText"></p>
+
         <div id="controls" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-            <button class="btn-magic btn-tg" onclick="shareToTelegram()">Отправить другу в Telegram ✈️</button>
-            <button class="btn-outline" onclick="shareMagic()">Другие способы поделиться ✨</button>
-            <a href="index.html" class="btn-outline">Вернуться к состояниям</a>
-            <button class="btn-outline" style="border: none; font-size: 13px;" onclick="location.reload()">Другой вопрос</button>
+            <button class="btn-small btn-tg" onclick="shareToTelegram()">Поделиться в Telegram ✈️</button>
+            <a href="https://t.me/nekyhnya" class="btn-small" style="text-decoration:none; background:#d4af37; color:white; display: flex; justify-content: center; align-items: center;">Личный разбор у Светланы 🔮</a>
+            <button class="btn-link" onclick="location.reload()">Другой вопрос</button>
+            <a href="index.html" class="btn-link" style="border:none; color: #666;">Вернуться на главную</a>
         </div>
     </div>
 
     <script>
-        function revealMagic() {
-            document.getElementById('headerText').innerText = "Твое Послание";
-            document.getElementById('startBtn').style.display = "none";
-            document.getElementById('cardBox').classList.add('active');
+        const cards = [
+            { img: 'img/thestar.png', text: '«Звезда — твой путь освещен. Доверься течению, надежда ведет тебя к цели».'},
+            { img: 'img/magician.png', text: '«Маг — у тебя есть все инструменты. Время действовать и проявлять свою волю в мир!»' },
+            { img: 'img/moon.png', text: '«Луна — прислушайся к интуиции. Не всё является тем, чем кажется, доверься голосу».' },
+            { img: 'img/empress.png', text: '«Императрица — время расцвета и изобилия. Твои идеи приносят плоды, созидай с любовью».' },
+            { img: 'img/sun.png', text: '«Солнце — полный триумф и радость! Всё сложится наилучшим образом. Свети!»' }
+        ];
+
+        function startOracle() {
+            // ЗАПУСК МУЗЫКИ
+            const audio = document.getElementById('magicAudio');
+            audio.volume = 0.4; // Делаем чуть тише, чтобы не оглушить
+            audio.play().catch(e => console.log("Нужен клик"));
+
+            // Плавное исчезновение экрана
+            document.getElementById('welcome-screen').style.opacity = '0';
             
             setTimeout(() => {
-                document.getElementById('msgText').classList.add('show');
-                document.getElementById('controls').style.display = "flex";
-            }, 800);
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('bg').style.background = 'linear-gradient(135deg, var(--sand-dark), var(--sand-medium), var(--sand-light))';
+                document.querySelector('h1').style.color = 'var(--text-main)';
+                document.querySelector('h1').innerText = 'Твое послание';
+
+                const randomIndex = Math.floor(Math.random() * cards.length);
+                const selectedCard = cards[randomIndex];
+
+                const cardImg = document.getElementById('mainCard');
+                cardImg.src = selectedCard.img;
+                document.getElementById('msgText').innerText = selectedCard.text;
+
+                const cardBox = document.getElementById('cardBox');
+                cardBox.style.display = 'block';
+                setTimeout(() => { cardBox.classList.add('active'); }, 100);
+
+                setTimeout(() => {
+                    document.getElementById('msgText').style.display = 'block';
+                    document.getElementById('controls').style.display = 'flex';
+                }, 1500);
+            }, 1000);
         }
 
         function shareToTelegram() {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent("Посмотри, какое послание я получила от звезд... ✨");
+            const text = encodeURIComponent("Посмотри, какое послание я получила от Светланы... ✨");
             window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
-        }
-
-        function shareMagic() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Послание Звезд',
-                    text: 'Узнай свое послание от звезд... ✨',
-                    url: window.location.href
-                }).catch(() => copyToClipboard());
-            } else {
-                copyToClipboard();
-            }
-        }
-
-        function copyToClipboard() {
-            const el = document.createElement('textarea');
-            el.value = window.location.href;
-            document.body.appendChild(el); el.select();
-            document.execCommand('copy'); document.body.removeChild(el);
-            const toast = document.getElementById('toast');
-            toast.style.opacity = "1";
-            setTimeout(() => { toast.style.opacity = "0"; }, 2000);
         }
     </script>
 </body>
