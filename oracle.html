@@ -149,15 +149,26 @@
         }
 
         function shareMagic() {
-            const url = window.location.href;
+            // Данные для отправки
+            const shareData = {
+                title: 'Послание Звезд для тебя',
+                text: 'Посмотри, какую карту я вытянула сегодня... ✨',
+                url: window.location.href
+            };
+
+            // Вчерашний метод: вызываем ТОЛЬКО системное меню
             if (navigator.share) {
-                navigator.share({
-                    title: 'Послание Звезд для тебя',
-                    text: 'Посмотри, какую карту я вытянула сегодня... ✨',
-                    url: url
-                }).catch(() => copyToClipboard(url));
+                navigator.share(shareData)
+                .then(() => console.log('Успешно!'))
+                .catch((error) => {
+                    // Если это не отмена пользователем, тогда покажем уведомление
+                    if (error.name !== 'AbortError') {
+                        alert("Скопируйте ссылку из адресной строки и отправьте другу ✨");
+                    }
+                });
             } else {
-                copyToClipboard(url);
+                // Если браузер совсем старый
+                alert("Ваш браузер не поддерживает кнопку 'Поделиться'. Просто скопируйте ссылку ✨");
             }
         }
 
