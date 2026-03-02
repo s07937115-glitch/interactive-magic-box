@@ -187,22 +187,28 @@
         }
 
         function shareMagic() {
-            const url = window.location.href;
+            const shareData = {
+                title: 'Магия Потока',
+                text: 'Узнай свое состояние сегодня ✨',
+                url: window.location.href
+            };
+
+            // Чистый вызов меню выбора контактов
             if (navigator.share) {
-                navigator.share({
-                    title: 'Магия Потока',
-                    text: 'Узнай свое состояние сегодня ✨',
-                    url: url
+                navigator.share(shareData)
+                .then(() => {
+                    console.log('Пользователь поделился!');
                 })
-                .then(() => console.log('Shared'))
                 .catch((err) => {
-                    if (err.name !== 'AbortError') copyToClipboard(url);
+                    // Если не сработало, просто выведем подсказку
+                    if (err.name !== 'AbortError') {
+                        alert("Нажмите на адресную строку и скопируйте ссылку, чтобы отправить её другу ✨");
+                    }
                 });
             } else {
-                copyToClipboard(url);
+                alert("Ваш браузер не поддерживает быстрый выбор контактов. Просто скопируйте ссылку из адресной строки ✨");
             }
         }
-
         function copyToClipboard(text) {
             const input = document.createElement('textarea');
             input.value = text;
