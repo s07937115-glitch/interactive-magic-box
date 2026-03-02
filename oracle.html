@@ -8,93 +8,169 @@
     <style>
         :root {
             --sand-dark: #c2a383;
+            --sand-medium: #dfc4a8;
             --sand-light: #f5e6d3;
             --text-main: #4a3f35;
-            --gold: #d4af37;
+            --accent-gold: #d4af37;
         }
 
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%;
             overflow: hidden; font-family: 'Cormorant Garamond', serif; 
-            background: radial-gradient(circle, var(--sand-light), var(--sand-dark));
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-main);
+            background: var(--sand-dark);
         }
 
-        h1 { font-weight: 300; font-size: 28px; color: var(--text-main); margin-bottom: 20px; text-align: center; }
-
-        /* Контейнер для появления карты */
-        .card-box {
-            width: 280px; height: 450px;
-            perspective: 1000px;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: 1.5s ease-out;
+        /* Живой фон как в первом проекте */
+        .bg-gradient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--sand-dark), var(--sand-medium), var(--sand-light));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
         }
 
-        .card-box.active {
-            opacity: 1; transform: translateY(0);
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; height: 100%; text-align: center;
+            padding: 20px; box-sizing: border-box;
+        }
+
+        h1 { font-weight: 300; font-size: 26px; margin-bottom: 20px; letter-spacing: 1px; }
+
+        /* Карта с эффектом появления */
+        .card-container {
+            position: relative; width: 260px; height: 430px;
+            opacity: 0; transform: scale(0.8) rotateY(180deg);
+            transition: 1.5s all cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 25px;
+        }
+
+        .card-container.active {
+            opacity: 1; transform: scale(1) rotateY(0deg);
         }
 
         .card-img {
-            width: 100%; height: 100%;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            border: 3px solid var(--gold);
+            width: 100%; height: 100%; border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border: 4px solid var(--accent-gold);
             object-fit: cover;
-            animation: float 4s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
+        /* Сияние вокруг карты */
+        .card-glow {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 15px; box-shadow: 0 0 30px var(--accent-gold);
+            opacity: 0.5; animation: pulse 3s infinite alternate;
+            z-index: -1;
         }
 
-        .btn-oracle {
-            margin-top: 30px;
-            background: var(--text-main); color: var(--sand-light);
-            padding: 15px 30px; border-radius: 30px;
-            border: none; font-family: inherit; font-size: 18px;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: 0.3s;
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 0.3; }
+            to { transform: scale(1.05); opacity: 0.6; }
         }
-
-        .btn-oracle:active { transform: scale(0.95); }
 
         .meaning {
-            margin-top: 20px; font-style: italic; font-size: 20px;
-            color: var(--text-main); max-width: 80%; text-align: center;
-            opacity: 0; transition: 2s;
+            font-size: 22px; font-style: italic; line-height: 1.4;
+            max-width: 90%; margin-bottom: 30px; opacity: 0;
+            transition: 2s ease;
+        }
+        .meaning.show { opacity: 1; }
+
+        /* Кнопки */
+        .btn-magic {
+            background: var(--text-main); color: var(--sand-light);
+            padding: 18px 0; border-radius: 40px; border: none;
+            font-family: inherit; font-size: 18px; cursor: pointer;
+            width: 85%; max-width: 280px; margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;
+            display: block; text-decoration: none;
         }
 
-        .meaning.show { opacity: 1; }
+        .btn-outline {
+            background: transparent; border: 1.5px solid var(--text-main);
+            color: var(--text-main); padding: 12px 0; border-radius: 40px;
+            width: 80%; max-width: 260px; font-family: inherit;
+            cursor: pointer; text-decoration: none; font-size: 16px;
+        }
+
+        #toast {
+            position: fixed; top: 20px; background: var(--text-main);
+            color: white; padding: 10px 20px; border-radius: 20px;
+            opacity: 0; transition: 0.5s; z-index: 1000;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Твое Послание Звезд</h1>
+    <div class="bg-gradient"></div>
+    <div id="toast">Ссылка скопирована ✨</div>
 
-    <div class="card-box" id="cardContainer">
-        <img src="img/thestar.png" class="card-img" alt="Карта Таро">
+    <div class="container">
+        <h1 id="headerText">Прислушайся к звездам...</h1>
+
+        <div class="card-container" id="cardBox">
+            <div class="card-glow"></div>
+            <img src="img/thestar.png" class="card-img" alt="Карта">
+        </div>
+
+        <p class="meaning" id="msgText">
+            «Звезда — это твой внутренний компас. <br>Сегодня свет ведет тебя туда, где рождается твоя истинная сила...»
+        </p>
+
+        <button class="btn-magic" id="startBtn" onclick="revealMagic()">Получить послание</button>
+        
+        <div id="controls" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <button class="btn-magic" onclick="shareMagic()">Поделиться магией ✨</button>
+            <a href="index.html" class="btn-outline">Вернуться к состояниям</a>
+            <button class="btn-outline" style="margin-top: 10px; border: none;" onclick="location.reload()">Другой вопрос</button>
+        </div>
     </div>
-
-    <div class="meaning" id="textMeaning">
-        «Звезда дарит надежду. Твой путь освещен, просто доверься течению...»
-    </div>
-
-    <button class="btn-oracle" onclick="revealCard()">Получить предсказание</button>
 
     <script>
-        function revealCard() {
-            // Показываем карту
-            document.getElementById('cardContainer').classList.add('active');
-            // С небольшой задержкой показываем текст
-            setTimeout(() => {
-                document.getElementById('textMeaning').classList.add('show');
-            }, 1000);
+        function revealMagic() {
+            // Анимация заголовка и кнопки
+            document.getElementById('headerText').innerText = "Твое Послание";
+            document.getElementById('startBtn').style.display = "none";
             
-            // Скрываем кнопку после нажатия
-            event.target.style.display = 'none';
+            // Появление карты и текста
+            document.getElementById('cardBox').classList.add('active');
+            
+            setTimeout(() => {
+                document.getElementById('msgText').classList.add('show');
+                document.getElementById('controls').style.display = "flex";
+            }, 1000);
+        }
+
+        function shareMagic() {
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Послание Звезд для тебя',
+                    text: 'Посмотри, какую карту я вытянула сегодня... ✨',
+                    url: url
+                }).catch(() => copyToClipboard(url));
+            } else {
+                copyToClipboard(url);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const toast = document.getElementById('toast');
+            toast.style.opacity = "1";
+            setTimeout(() => { toast.style.opacity = "0"; }, 2500);
         }
     </script>
 </body>
