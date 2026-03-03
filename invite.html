@@ -13,7 +13,7 @@
             --silk-pink: #f9e1dc;
             --text-main: #5d4f43;
             --accent-gold: #d4af37;
-            --color-marsala: #800020; /* Глубокий марсала */
+            --color-marsala: #800020;
         }
 
         body, html { 
@@ -35,34 +35,34 @@
             position: relative;
         }
 
-        h1 { font-weight: 300; font-size: 32px; margin-bottom: 20px; letter-spacing: 2px; }
+        h1 { font-weight: 300; font-size: 28px; margin-bottom: 20px; letter-spacing: 2px; }
 
-        /* УВЕЛИЧЕННЫЙ ПОДЗАГОЛОВОК */
         .mystic-text { 
             font-style: italic; color: #7a6e61; 
-            margin-bottom: 40px; font-size: 24px; /* Увеличили */
+            margin-bottom: 40px; font-size: 22px; 
             line-height: 1.5; max-width: 90%;
             letter-spacing: 0.5px;
         }
 
-        /* ТУМАННОЕ ПОЯВЛЕНИЕ КАЛЛИГРАФИИ */
         .handwritten-fade {
             font-family: 'Tiro Gurmukhi', serif; 
-            font-style: italic; font-size: 30px; color: var(--color-marsala);
+            font-style: italic; font-size: 28px; color: var(--color-marsala);
             line-height: 1.4; opacity: 0;
-            transition: opacity 3s ease-in-out; /* Плавное проявление 3 секунды */
+            transition: opacity 3s ease-in-out;
             margin-bottom: 30px;
         }
 
+        /* ИСПРАВЛЕННЫЕ КНОПКИ (Текст по центру) */
         .btn-tender {
             background: var(--silk-pink); color: var(--text-main);
-            padding: 18px 35px; border-radius: 40px; border: none;
-            font-family: inherit; font-size: 19px; cursor: pointer; text-decoration: none;
+            padding: 18px 0; border-radius: 40px; border: none;
+            font-family: inherit; font-size: 18px; cursor: pointer; text-decoration: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.4s;
             position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+            width: 80%; max-width: 300px;
+            display: flex; justify-content: center; align-items: center; text-align: center;
         }
 
-        /* СТИЛЬ КНОПКИ МАРСАЛА */
         .btn-marsala {
             background: var(--color-marsala) !important;
             color: #ffffff !important;
@@ -72,7 +72,7 @@
         #music-toggle {
             position: fixed; top: 20px; right: 20px;
             font-size: 22px; color: var(--color-marsala);
-            cursor: pointer; z-index: 200; opacity: 0.5;
+            cursor: pointer; z-index: 200; opacity: 0.5; display: none;
         }
 
         #final-screen {
@@ -83,9 +83,9 @@
         }
         
         .invitation-img {
-            max-width: 90%; max-height: 65%;
+            max-width: 90%; max-height: 60%;
             border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -93,25 +93,22 @@
 </head>
 <body>
 
-    <audio id="tenderAudio" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/04/Rainy-Day-Implicit.mp3" type="audio/mpeg">
+    <audio id="tenderAudio" loop preload="auto">
+        <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Classical_Sampler/Kevin_MacLeod_-_Gymnopedie_No_1.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="music-toggle" onclick="toggleMusic()" style="display: none;">🎶</div>
+    <div id="music-toggle" onclick="toggleMusic()">🎶</div>
 
     <div class="story-container" id="story">
-        
         <div class="screen" id="screen1">
             <h1>Светлана приглашает...🌷</h1>
-            <p class="mystic-text">Давай на один вечер забудем о делах? Просто встретим весну вместе. В кругу своих.</p>
-            <button class="btn-tender" onclick="nextScreen(1)">Заглянуть в гости 🕊️</button>
+            <p class="mystic-text">Давай на один вечер забудем о делах? Просто встретим праздник вместе. В кругу своих.</p>
+            <button class="btn-tender" onclick="startExperience()">Заглянуть в гости 🕊️</button>
         </div>
 
         <div class="screen" id="screen2">
             <h1>Будет душевно...🌻</h1>
-            <p class="mystic-text">
-                Наслаждаться цветами, звоном бокалов ,нежным десертом и общением. Сделаем фото, от которых ты будешь в восторге.
-            </p>
+            <p class="mystic-text">Мы будем любоваться цветами, наслаждаться нежными десертами , звоном бокалов и общением. Сделаем фото, от которых у тебя захватит дух.</p>
             <button class="btn-tender" onclick="nextScreen(2)">Хочу к вам! 🥂</button>
         </div>
 
@@ -127,14 +124,17 @@
 
     <div id="final-screen">
         <img src="img/invitation_bg.png" class="invitation-img" alt="Билет">
-        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-            <a href="https://t.me/nekyhnya" class="btn-tender btn-marsala" style="position:static; transform:none; width: 85%;">
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            
+            <a href="https://t.me/nekyhnya" class="btn-tender btn-marsala" style="position:static; transform:none;">
                 Подтвердить участие 🕊️
             </a>
-            <a href="#" class="btn-tender" style="position:static; transform:none; width: 85%; background: transparent; border: 1px solid var(--color-marsala); color: var(--color-marsala);" onclick="shareInTelegram(event)">
-                Отправить подруге ✨
+
+            <a href="#" class="btn-tender" style="position:static; transform:none; background: transparent; border: 1px solid var(--color-marsala); color: var(--color-marsala);" onclick="shareInTelegram(event)">
+                Пригласить подругу ✨
             </a>
-            <button style="background:none; border:none; color:#bbb; margin-top:10px;" onclick="location.reload()">На главную</button>
+
+            <button style="background:none; border:none; color:#bbb; margin-top:10px; font-family:inherit; cursor:pointer;" onclick="location.reload()">На главную</button>
         </div>
     </div>
 
@@ -143,25 +143,27 @@
         const musicToggle = document.getElementById('music-toggle');
         let currentScreen = 0;
 
-        function nextScreen(index) {
-            if (index === 1 && currentScreen === 0) {
-                audio.volume = 0.4;
-                audio.play();
-                musicToggle.style.display = 'block';
-            }
+        function startExperience() {
+            // Запуск музыки при первом клике
+            audio.volume = 0.4;
+            audio.play().catch(e => console.log("Музыка ждет клика"));
+            musicToggle.style.display = 'block';
+            nextScreen(1);
+        }
 
+        function nextScreen(index) {
             currentScreen = index;
             document.getElementById('story').style.transform = `translateY(-${currentScreen * 100}vh)`;
 
             if (currentScreen === 2) {
                 setTimeout(() => {
-                    const text = document.getElementById('writingText');
-                    text.style.opacity = '1'; // Плавное проявление
+                    document.getElementById('writingText').style.opacity = '1';
                 }, 500);
 
                 setTimeout(() => {
-                    document.getElementById('finalBtn').style.display = 'block';
-                    document.getElementById('finalBtn').style.animation = 'fadeIn 2s forwards';
+                    const finalBtn = document.getElementById('finalBtn');
+                    finalBtn.style.display = 'flex';
+                    finalBtn.style.animation = 'fadeIn 2s forwards';
                 }, 3500);
             }
         }
@@ -179,7 +181,7 @@
         function shareInTelegram(event) {
             event.preventDefault();
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent("Смотри, какое нежное приглашение... 🌸 Я иду, пойдем со мной?");
+            const text = encodeURIComponent("Смотри, какую нежность прислала Светлана... 🌸 Я иду, пойдем со мной?");
             window.open(`tg://msg?text=${text}%0A${url}`, '_blank');
         }
     </script>
