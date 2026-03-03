@@ -9,151 +9,132 @@
     
     <style>
         :root {
-            --bg-powder: #fdf2f0; /* Нежно-пудровый */
-            --silk-pink: #f9e1dc; /* Чуть насыщеннее */
-            --text-main: #5d4f43; /* Кофейный */
-            --accent-gold: #d4af37; /* Матовое золото */
+            --bg-powder: #fdf2f0;
+            --silk-pink: #f9e1dc;
+            --text-main: #5d4f43;
+            --accent-gold: #d4af37;
+            --color-marsala: #800020; /* Глубокий марсала */
         }
 
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%;
             font-family: 'Cormorant Garamond', serif; 
             color: var(--text-main); background: var(--bg-powder);
-            overflow: hidden; /* Запрещаем скролл для листания */
-            touch-action: none; /* Улучшает опыт на телефонах */
+            overflow: hidden; touch-action: none;
         }
 
-        /* КОНТЕЙНЕР ЭКРАНОВ (300vh = 3 экрана по 100% высоты) */
         .story-container {
             display: flex; flex-direction: column; height: 300vh;
             transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
-            will-change: transform;
         }
 
-        /* ОБЩИЕ СТИЛИ ДЛЯ ЭКРАНА (Адаптация) */
         .screen {
             height: 100vh; width: 100%; display: flex;
             flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 10% 5%; box-sizing: border-box; /* Отступы в % */
-            position: relative; transition: opacity 0.8s;
+            text-align: center; padding: 0 10%; box-sizing: border-box;
+            position: relative;
         }
 
-        /* Заголовки (Адаптивный размер) */
-        h1 { font-weight: 300; font-size: 6vw; /* Зависит от ширины экрана */ 
-             margin-bottom: 15px; letter-spacing: 1px; max-width: 90%; }
-        
-        @media (min-width: 768px) { h1 { font-size: 32px; } } /* Для планшетов/ПК */
+        h1 { font-weight: 300; font-size: 32px; margin-bottom: 20px; letter-spacing: 2px; }
 
-        /* Тексты (Адаптивный размер) */
+        /* УВЕЛИЧЕННЫЙ ПОДЗАГОЛОВОК */
         .mystic-text { 
             font-style: italic; color: #7a6e61; 
-            margin-bottom: 40px; font-size: 4.5vw; 
-            line-height: 1.6; max-width: 85%; 
+            margin-bottom: 40px; font-size: 24px; /* Увеличили */
+            line-height: 1.5; max-width: 90%;
+            letter-spacing: 0.5px;
         }
-        @media (min-width: 768px) { .mystic-text { font-size: 20px; } }
 
-        /* ЭФФЕКТ ПИСЬМА (КАЛЛИГРАФИЯ) */
-        .handwritten-text {
+        /* ТУМАННОЕ ПОЯВЛЕНИЕ КАЛЛИГРАФИИ */
+        .handwritten-fade {
             font-family: 'Tiro Gurmukhi', serif; 
-            font-style: italic; font-size: 6vw; color: var(--accent-gold);
-            line-height: 1.4; max-width: 80%; margin: 25px 0;
-            display: none; white-space: nowrap; overflow: hidden;
-            border-right: 2px solid var(--accent-gold); /* Курсор печати */
-            animation: typing 5s steps(50, end), blink-caret 0.75s step-end infinite;
+            font-style: italic; font-size: 30px; color: var(--color-marsala);
+            line-height: 1.4; opacity: 0;
+            transition: opacity 3s ease-in-out; /* Плавное проявление 3 секунды */
+            margin-bottom: 30px;
         }
-        @media (min-width: 768px) { .handwritten-text { font-size: 32px; } }
 
-        /* КНОПКИ (Адаптация и нежность) */
         .btn-tender {
             background: var(--silk-pink); color: var(--text-main);
-            padding: 16px 30px; border-radius: 30px; border: 1px solid rgba(93,79,67, 0.1);
-            font-family: inherit; font-size: 18px; cursor: pointer; text-decoration: none;
-            box-shadow: 0 5px 15px rgba(249, 225, 220, 0.4); transition: 0.4s;
-            position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%);
-            width: auto; max-width: 80%; display: flex; align-items: center; justify-content: center;
+            padding: 18px 35px; border-radius: 40px; border: none;
+            font-family: inherit; font-size: 19px; cursor: pointer; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.4s;
+            position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
         }
-        .btn-tender:active { transform: translateX(-50%) scale(0.95); }
 
-        /* ИКОНКА ЗВУКА */
+        /* СТИЛЬ КНОПКИ МАРСАЛА */
+        .btn-marsala {
+            background: var(--color-marsala) !important;
+            color: #ffffff !important;
+            box-shadow: 0 8px 25px rgba(128, 0, 32, 0.3) !important;
+        }
+
         #music-toggle {
             position: fixed; top: 20px; right: 20px;
-            font-size: 24px; color: var(--accent-gold);
-            cursor: pointer; z-index: 200; opacity: 0.6; transition: 0.3s;
+            font-size: 22px; color: var(--color-marsala);
+            cursor: pointer; z-index: 200; opacity: 0.5;
         }
-        #music-toggle:hover { opacity: 1; }
 
-        /* ФИНАЛЬНЫЙ ЭКРАН С БИЛЕТОМ (Попап поверх всего) */
         #final-screen {
             display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(253,242,240, 0.98);
+            width: 100%; height: 100%; background: var(--bg-powder);
             z-index: 100; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; box-sizing: border-box;
-            animation: fadeIn 1s forwards;
         }
         
         .invitation-img {
-            max-width: 85%; max-height: 70%;
-            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid var(--accent-gold); object-fit: contain;
+            max-width: 90%; max-height: 65%;
+            border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
 
-        /* АНИМАЦИИ */
-        @keyframes typing { from { width: 0; } to { width: 100%; } }
-        @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: var(--accent-gold); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes pulse-gold { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
     </style>
 </head>
 <body>
 
-    <audio id="tenderAudio" loop preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    <audio id="tenderAudio" loop>
+        <source src="https://www.chosic.com/wp-content/uploads/2021/04/Rainy-Day-Implicit.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="music-toggle" onclick="toggleMusic()" style="display: none;">🔊</div>
+    <div id="music-toggle" onclick="toggleMusic()" style="display: none;">🎶</div>
 
     <div class="story-container" id="story">
         
         <div class="screen" id="screen1">
             <h1>Светлана приглашает...🌷</h1>
-            <p class="mystic-text">Давай на один вечер забудем о делах и проблемах ? Просто встретим весну вместе. В кругу своих.</p>
-            <button class="btn-tender" id="startBtn" onclick="nextScreen(1)">Заглянуть в гости 🕊️</button>
+            <p class="mystic-text">Давай на один вечер забудем о делах? Просто встретим весну вместе. В кругу своих.</p>
+            <button class="btn-tender" onclick="nextScreen(1)">Заглянуть в гости 🕊️</button>
         </div>
 
         <div class="screen" id="screen2">
             <h1>Будет душевно...🌻</h1>
             <p class="mystic-text">
-                Наслаждаться весенними цветами, звоном бокалов и вкусным десертом. Сделаем фотографии, на которых ты себе точно понравишься.
+                Наслаждаться цветами, звоном бокалов ,нежным десертом и общением. Сделаем фото, от которых ты будешь в восторге.
             </p>
             <button class="btn-tender" onclick="nextScreen(2)">Хочу к вам! 🥂</button>
         </div>
 
         <div class="screen" id="screen3">
-            
-            <div class="handwritten-text" id="writingText">Светлана, я жду именно тебя... <br>Подари это время себе. 💖</div>
-            
-            <button class="btn-tender" id="finalBtn" style="display: none; background:var(--accent-gold); color:white; animation:pulse-gold 2s infinite;" onclick="showTicket()">ЗАБРАТЬ МОЙ БИЛЕТ 🩰</button>
+            <div class="handwritten-fade" id="writingText">
+                Дорогая... <br>
+                Я жду именно тебя. <br>
+                Подари это время себе. 💖
+            </div>
+            <button class="btn-tender btn-marsala" id="finalBtn" style="display: none;" onclick="showTicket()">ЗАБРАТЬ МОЙ БИЛЕТ 🩰</button>
         </div>
     </div>
 
     <div id="final-screen">
-        <img src="img/invitation_bg.png" class="invitation-img" alt="Ваше Приглашение">
-        
-        <p style="margin-top: 5px; font-style:italic; font-size: 16px; color:#999;">Сохрани скриншот билета 😊</p>
-        
-        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 15px;">
-            
-            <a href="https://t.me/Svetlana_Magic" class="btn-tender" style="position:static; transform:none; width: 80%; max-width: 280px; background: var(--silk-pink);">
+        <img src="img/invitation_bg.png" class="invitation-img" alt="Билет">
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <a href="https://t.me/nekyhnya" class="btn-tender btn-marsala" style="position:static; transform:none; width: 85%;">
                 Подтвердить участие 🕊️
             </a>
-
-            <a href="#" class="btn-tender" style="position:static; transform:none; width: 80%; max-width: 280px; background: transparent; border: 1px solid var(--accent-gold); color:var(--accent-gold);" onclick="shareInTelegram(event)">
+            <a href="#" class="btn-tender" style="position:static; transform:none; width: 85%; background: transparent; border: 1px solid var(--color-marsala); color: var(--color-marsala);" onclick="shareInTelegram(event)">
                 Отправить подруге ✨
             </a>
-
-            <button class="btn-link" style="border:none; color: #bbb; cursor: pointer; background: none; font-family: inherit; margin-top:10px;" onclick="location.reload()">Вернуться в начало</button>
+            <button style="background:none; border:none; color:#bbb; margin-top:10px;" onclick="location.reload()">На главную</button>
         </div>
     </div>
 
@@ -162,76 +143,43 @@
         const musicToggle = document.getElementById('music-toggle');
         let currentScreen = 0;
 
-        // ФУНКЦИЯ ВКЛЮЧЕНИЯ МУЗЫКИ НА 1 КЛИКЕ
-        function startMusicOnInteraction() {
-            audio.volume = 0.5;
-            audio.play().then(() => {
-                musicToggle.style.display = 'block'; // Показываем иконку звука
-            }).catch(e => console.log("Браузер ждет клика"));
-        }
-
         function nextScreen(index) {
-            // На первом экране запускаем музыку
             if (index === 1 && currentScreen === 0) {
-                startMusicOnInteraction();
+                audio.volume = 0.4;
+                audio.play();
+                musicToggle.style.display = 'block';
             }
 
             currentScreen = index;
-            const story = document.getElementById('story');
-            // Плавно скроллим контейнер вниз
-            story.style.transform = `translateY(-${currentScreen * 100}vh)`;
+            document.getElementById('story').style.transform = `translateY(-${currentScreen * 100}vh)`;
 
-            // Запускаем анимацию письма на 3 экране
             if (currentScreen === 2) {
-                // Скрываем заголовок 1 экрана, чтобы не мешал каллиграфии
-                document.querySelector('#screen1 h1').style.display = 'none';
-                startWritingEffect();
+                setTimeout(() => {
+                    const text = document.getElementById('writingText');
+                    text.style.opacity = '1'; // Плавное проявление
+                }, 500);
+
+                setTimeout(() => {
+                    document.getElementById('finalBtn').style.display = 'block';
+                    document.getElementById('finalBtn').style.animation = 'fadeIn 2s forwards';
+                }, 3500);
             }
-        }
-
-        function startWritingEffect() {
-            const writingText = document.getElementById('writingText');
-            const finalBtn = document.getElementById('finalBtn');
-
-            // Показываем блок с текстом
-            writingText.style.display = 'block';
-
-            // Через 5.5 секунд (когда анимация печати закончится)
-            setTimeout(() => {
-                // Убираем курсор
-                writingText.style.borderRight = 'none';
-                // Показываем кнопку
-                finalBtn.style.display = 'block';
-                // Плавное появление кнопки
-                finalBtn.style.animation = 'fadeInTicket 1s forwards, pulse-gold 2s infinite';
-            }, 5500);
         }
 
         function showTicket() {
             document.getElementById('final-screen').style.display = 'flex';
-            // Добавим легкое размытие заднего фона для акцента на билете
-            document.getElementById('story').style.filter = 'blur(10px)';
+            document.getElementById('story').style.filter = 'blur(8px)';
         }
 
-        // УПРАВЛЕНИЕ ЗВУКОМ (Вкл/Выкл)
         function toggleMusic() {
-            if (audio.paused) {
-                audio.play();
-                musicToggle.innerText = '🔊';
-                musicToggle.style.opacity = '1';
-            } else {
-                audio.pause();
-                musicToggle.innerText = '🔇';
-                musicToggle.style.opacity = '0.4';
-            }
+            if (audio.paused) { audio.play(); musicToggle.style.opacity = '1'; } 
+            else { audio.pause(); musicToggle.style.opacity = '0.3'; }
         }
 
-        // ИСТИННЫЙ ТЕЛЕГРАМ ШЕЙРИНГ
         function shareInTelegram(event) {
-            event.preventDefault(); // Запрещаем переход по умолчанию
+            event.preventDefault();
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent("Светлана прислала что-то невероятно нежное... 🌸 Я иду на этот девичник 8 марта, пойдем со мной? Посмотри сама, дух захватывает!");
-            // Эта ссылка открывает именно Telegram
+            const text = encodeURIComponent("Смотри, какое нежное приглашение... 🌸 Я иду, пойдем со мной?");
             window.open(`tg://msg?text=${text}%0A${url}`, '_blank');
         }
     </script>
