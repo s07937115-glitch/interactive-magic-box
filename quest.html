@@ -3,112 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Тайная комната | Квест</title>
+    <title>Тайный Сейф | Квест для тебя</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pacifico&display=swap" rel="stylesheet">
-<style>
-    /* ОБНОВЛЕННЫЙ ВИЗУАЛ СЕЙФА */
-    #safe-container {
-        width: 260px; height: 300px;
-        background: linear-gradient(145deg, #7f8c8d, #34495e); /* Градиент металла */
-        border: 10px solid #2c3e50;
-        border-radius: 20px; position: relative;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        box-shadow: 20px 20px 60px #1a252f, -5px -5px 20px #3e5871;
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
+    <style>
+        :root {
+            --gold: #f1c40f;
+            --steel: #7f8c8d;
+            --dark-steel: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
 
-    /* ЗОЛОТЫЕ ЗАКЛЕПКИ ПО УГЛАМ */
-    #safe-container::before, #safe-container::after {
-        content: ''; position: absolute; width: 15px; height: 15px;
-        background: radial-gradient(circle, #f1c40f, #d4af37);
-        border-radius: 50%; border: 2px solid #917a07;
-    }
-    /* Располагаем их (для примера две, можно четыре) */
-    #safe-container::before { top: 15px; left: 15px; box-shadow: 215px 0 #f1c40f, 0 240px #f1c40f, 215px 240px #f1c40f; }
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background: #1a252f; color: white; overflow: hidden;
+        }
 
-    /* ШТУРВАЛ (РУЧКА) */
-    .handle {
-        width: 100px; height: 100px;
-        background: #bdc3c7; border: 8px solid #95a5a6;
-        border-radius: 50%; position: relative;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: inset 2px 2px 5px white, 5px 5px 15px rgba(0,0,0,0.3);
-    }
+        .stage {
+            display: none; height: 100vh; width: 100%;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; box-sizing: border-box;
+            position: absolute; top: 0; left: 0;
+        }
 
-    /* Спицы штурвала */
-    .handle::before {
-        content: ''; position: absolute; width: 120%; height: 10px;
-        background: #95a5a6; border-radius: 5px;
-    }
-    .handle::after {
-        content: ''; position: absolute; width: 10px; height: 120%;
-        background: #95a5a6; border-radius: 5px;
-    }
+        .active { display: flex; animation: fadeIn 0.5s forwards; }
 
-    /* ЭКРАНЧИК НА СЕЙФЕ */
-    .safe-display {
-        width: 120px; height: 40px; background: #1a1a1a;
-        border-radius: 5px; margin-bottom: 20px;
-        border: 3px solid #34495e;
-        display: flex; align-items: center; justify-content: center;
-        color: #2ecc71; font-family: 'Courier New', monospace;
-        font-size: 20px; box-shadow: inset 0 0 10px #000;
-    }
+        /* ВИЗУАЛ СЕЙФА */
+        #safe-container {
+            width: 260px; height: 300px;
+            background: linear-gradient(145deg, var(--steel), var(--dark-steel));
+            border: 10px solid #1a252f; border-radius: 20px;
+            position: relative; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: all 0.5s; z-index: 10;
+        }
 
-    /* Эффект обиженного сейфа (покраснение всего корпуса) */
-    .angry-safe {
-        background: linear-gradient(145deg, #e74c3c, #c0392b) !important;
-        animation: shake 0.5s ease-in-out;
-    }
-</style>
+        .safe-display {
+            width: 140px; height: 40px; background: #000;
+            border-radius: 5px; margin-bottom: 30px;
+            border: 2px solid #444; color: var(--success);
+            display: flex; align-items: center; justify-content: center;
+            font-family: monospace; font-size: 20px; letter-spacing: 5px;
+        }
 
-<div id="safe-container">
-    <div class="safe-display" id="main-display">LOCKED</div>
-    <div class="handle" id="handle">
-        <div style="width:20px; height:20px; background:#7f8c8d; border-radius:50%; z-index:10;"></div>
+        .handle {
+            width: 100px; height: 100px; background: #bdc3c7;
+            border-radius: 50%; border: 8px solid #95a5a6;
+            position: relative; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .handle::before { content: ''; position: absolute; width: 110%; height: 10px; background: #95a5a6; }
+        .handle::after { content: ''; position: absolute; width: 10px; height: 110%; background: #95a5a6; }
+
+        /* ИНДИКАТОРЫ */
+        .progress-dots { display: flex; gap: 15px; margin-bottom: 20px; }
+        .dot { width: 15px; height: 15px; background: #444; border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: var(--success); box-shadow: 0 0 10px var(--success); }
+
+        /* КНОПКИ */
+        .btn {
+            background: var(--gold); color: #000; border: none;
+            padding: 15px 30px; font-size: 18px; border-radius: 30px;
+            cursor: pointer; margin-top: 20px; font-weight: bold;
+            box-shadow: 0 4px 0 #b8950c; transition: 0.2s;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+
+        /* ЗАДАНИЕ 1: ТОЧКИ */
+        #points-canvas { background: #fff; border-radius: 15px; touch-action: none; cursor: crosshair; }
+
+        /* АНИМАЦИИ */
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px) rotate(-2deg);} 75% {transform: translateX(10px) rotate(2deg);} }
+        .shake { animation: shake 0.4s ease-in-out; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+        h2 { font-family: 'Pacifico', cursive; color: var(--gold); margin-bottom: 10px; }
+        p { font-size: 18px; line-height: 1.4; color: #bdc3c7; }
+
+        #final-screen { background: var(--gold); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="stage active" id="stage0">
+        <div class="progress-dots">
+            <div class="dot" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
+        </div>
+        <div id="safe-container">
+            <div class="safe-display" id="display">***</div>
+            <div class="handle" id="handle"></div>
+        </div>
+        <h2 id="safe-title">Сейф закрыт</h2>
+        <p id="safe-desc">Найди 3 цифры кода, чтобы открыть его!</p>
+        <button class="btn" onclick="goToStage(1)">Начать квест 🚀</button>
     </div>
-</div>
+
+    <div class="stage" id="stage1">
+        <h2>Задание №1</h2>
+        <p>Соедини точки по порядку, чтобы узнать первую цифру!</p>
+        <canvas id="points-canvas" width="300" height="300"></canvas>
+        <div id="digit1-result" style="display:none;">
+            <h1 style="font-size: 48px; color: var(--gold);">Ваша цифра: 3</h1>
+            <button class="btn" onclick="returnToSafe(1, 3)">Вернуться к сейфу</button>
+        </div>
+    </div>
+
+    <div class="stage" id="stage2">
+        <h2>Задание №2</h2>
+        <p>Отгадай загадку:<br>Сколько лапок у кота, если их еще два раза столько же?</p>
+        <input type="number" id="riddle-input" style="padding: 15px; font-size: 24px; width: 80px; text-align: center; border-radius: 10px;">
+        <button class="btn" onclick="checkRiddle()">Проверить</button>
+    </div>
+
+    <div class="stage" id="stage3">
+        <h2>Последний шаг!</h2>
+        <p>Тряси телефон или нажимай на экран очень быстро, чтобы выбить последнюю цифру!</p>
+        <div id="progress-bar" style="width: 200px; height: 20px; background: #444; border-radius: 10px; overflow: hidden;">
+            <div id="progress-fill" style="width: 0%; height: 100%; background: var(--gold); transition: 0.1s;"></div>
+        </div>
+        <button class="btn" onclick="tapToWin()">ЖМИ!</button>
+    </div>
+
+    <div class="stage" id="final-screen">
+        <h1 style="font-size: 50px;">УРААА! 🎉</h1>
+        <p style="color: #000; font-weight: bold;">Сейф открыт!</p>
+        <h2 style="color: #2c3e50;">ТВОЙ ПОДАРОК ЖДЕТ ТЕБЯ ПОД КРОВАТЬЮ!</h2>
+        <button class="btn" style="background: #2c3e50; color: white;" onclick="location.reload()">Начать заново</button>
+    </div>
+
+    <audio id="winSound" src="magic_music.mp3" loop></audio>
+
     <script>
-        const correctCode = [3, 7, 5]; // Наш секретный код
-        let currentStep = 0;
+        let currentStage = 0;
+        let collectedCode = [];
+        let clicks = 0;
 
-        function checkDigit(num) {
-            const safe = document.getElementById('safe-container');
-            const msg = document.getElementById('message');
+        function goToStage(num) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById('stage' + num).classList.add('active');
+            if(num === 1) initCanvas();
+        }
 
-            if (num === correctCode[currentStep]) {
-                // ПРАВИЛЬНО
-                document.getElementById(`l${currentStep + 1}`).classList.add('success-light');
-                document.getElementById(`d${currentStep + 1}`).innerText = num;
-                currentStep++;
-                
-                // Радостная реакция
-                safe.style.background = '#27ae60';
-                setTimeout(() => safe.style.background = '#7f8c8d', 500);
-                
-                if (currentStep === 1) msg.innerText = "Верно! Теперь вторая... (Дней в неделе)";
-                if (currentStep === 2) msg.innerText = "Почти! Последняя... (Дай пять!)";
-                
-                if (currentStep === 3) {
-                    openSafe();
-                }
-            } else {
-                // ОШИБКА
-                safe.classList.add('error');
-                msg.innerText = "Ой! Сейф обиделся... Попробуй еще раз!";
-                setTimeout(() => {
-                    safe.classList.remove('error');
-                }, 500);
+        function returnToSafe(stageIdx, digit) {
+            collectedCode.push(digit);
+            document.getElementById('dot' + collectedCode.length).classList.add('active');
+            document.getElementById('display').innerText = collectedCode.map(n => n).join('') + '*'.repeat(3-collectedCode.length);
+            
+            // Крутим ручку
+            const handle = document.getElementById('handle');
+            handle.style.transform = `rotate(${collectedCode.length * 90}deg)`;
+            
+            goToStage(0);
+
+            if(collectedCode.length === 1) {
+                document.querySelector('#stage0 .btn').innerText = "За вторым кодом! 🏃‍♂️";
+                document.querySelector('#stage0 .btn').onclick = () => goToStage(2);
+            } else if(collectedCode.length === 2) {
+                document.querySelector('#stage0 .btn').innerText = "Последняя цифра! 🔥";
+                document.querySelector('#stage0 .btn').onclick = () => goToStage(3);
+            } else if(collectedCode.length === 3) {
+                document.querySelector('#stage0 .btn').innerText = "ОТКРЫТЬ СЕЙФ 🔑";
+                document.querySelector('#stage0 .btn').onclick = openFinalSafe;
             }
         }
 
-        function openSafe() {
-            document.getElementById('handle').style.transform = 'rotate(360deg)';
+        // ЗАДАНИЕ 1: РИСОВАНИЕ ТОЧЕК
+        function initCanvas() {
+            const canvas = document.getElementById('points-canvas');
+            const ctx = canvas.getContext('2d');
+            const points = [{x: 50, y: 50}, {x: 250, y: 50}, {x: 250, y: 250}, {x: 50, y: 250}];
+            let connected = 0;
+
+            ctx.clearRect(0, 0, 300, 300);
+            points.forEach((p, i) => {
+                ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(p.x, p.y, 10, 0, Math.PI*2); ctx.fill();
+                ctx.fillText(i+1, p.x-5, p.y-15);
+            });
+
+            canvas.onclick = () => {
+                connected++;
+                if(connected >= points.length) {
+                    document.getElementById('points-canvas').style.display = 'none';
+                    document.getElementById('digit1-result').style.display = 'block';
+                }
+            };
+        }
+
+        // ЗАДАНИЕ 2: ЗАГАДКА
+        function checkRiddle() {
+            const val = document.getElementById('riddle-input').value;
+            if(val == "12") {
+                returnToSafe(2, 2);
+            } else {
+                alert("Неа! Подумай еще раз!");
+            }
+        }
+
+        // ЗАДАНИЕ 3: КЛИКИ
+        function tapToWin() {
+            clicks += 5;
+            document.getElementById('progress-fill').style.width = clicks + '%';
+            if(clicks >= 100) {
+                returnToSafe(3, 5);
+            }
+        }
+
+        // ФИНАЛ
+        function openFinalSafe() {
+            const safe = document.getElementById('safe-container');
+            safe.style.transform = "perspective(1000px) rotateY(-110deg) translateX(-100px)";
+            document.getElementById('winSound').play();
             setTimeout(() => {
-                document.getElementById('safe-container').style.transformOrigin = 'left';
-                document.getElementById('safe-container').style.transform = 'perspective(1000px) rotateY(-110deg)';
-                document.getElementById('message').innerText = "УРА! ЗАГЛЯНИ ПОД ПОДУШКУ! 🎉";
-                document.body.style.background = '#f1c40f';
+                goToStage('final-screen');
             }, 1000);
         }
     </script>
