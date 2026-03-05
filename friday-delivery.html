@@ -31,11 +31,13 @@
             width: 100%;
             height: auto;
             display: block;
+            min-height: 200px;
+            background: #333;
         }
         .content {
             padding: 20px;
         }
-        h2 { color: #ffcc00; margin-top: 0; }
+        h2 { color: #ffcc00; margin-top: 0; text-transform: uppercase; }
         p { line-height: 1.5; font-size: 1.1rem; }
         .btn-group {
             display: flex;
@@ -52,9 +54,9 @@
             font-size: 1rem;
             transition: 0.3s;
         }
-        .btn-main { background: #ffcc00; color: #000; }
-        .btn-alt { background: #444; color: #fff; }
-        .btn-nav { background: none; color: #888; text-decoration: underline; font-size: 0.8rem; margin: 5px; }
+        .btn-main { background: #ffcc00; color: #000; box-shadow: 0 4px #b89600; }
+        .btn-main:active { transform: translateY(4px); box-shadow: none; }
+        .btn-nav { background: none; color: #888; text-decoration: underline; font-size: 0.8rem; margin: 5px; cursor: pointer; border: none; }
     </style>
 </head>
 <body>
@@ -64,7 +66,7 @@
     </audio>
 
     <div class="card" id="game-card">
-        <img id="main-img" src="img/start_race.jpg" alt="Пятница">
+        <img id="main-img" src="img/start_race.jpg" alt="Форсаж">
         
         <div class="content">
             <h2 id="title">🚨 ПРИСТЕГНИТЕСЬ!</h2>
@@ -74,16 +76,15 @@
         <div class="btn-group" id="buttons">
             </div>
         
-        <div style="margin-bottom: 10px; display: flex; justify-content: space-around;">
+        <div style="margin-bottom: 10px; display: flex; justify-content: center; gap: 15px;">
             <button class="btn-nav" onclick="goBack()">⬅️ Назад</button>
-            <button class="btn-nav" id="music-btn" onclick="toggleMusic()">🔊 Музыка ВКЛ</button>
+            <button class="btn-nav" id="music-btn" onclick="toggleMusic()">🔇 Музыка</button>
             <button class="btn-nav" onclick="restart()">🏠 В начало</button>
         </div>
     </div>
 
     <script>
         const states = {
-            // Новый первый экран: только СТАРТ
             pre_start: {
                 img: 'img/start_race.jpg',
                 title: '🚨 ПРИСТЕГНИТЕСЬ!',
@@ -94,7 +95,10 @@
                 img: 'img/start_race.jpg',
                 title: '🚨 ВНИМАНИЕ!',
                 text: 'Только сегодня — секретный РОЗЫГРЫШ! Приз заберет тот, кто приедет к 15:00.',
-                btns: [{ text: 'Участвовать в розыгрыше', next: 'choice' }, { text: 'Остаться в стороне', next: 'slow' }]
+                btns: [
+                    { text: 'Участвовать в розыгрыше', next: 'choice' }, 
+                    { text: 'Остаться в стороне', next: 'slow' }
+                ]
             },
             slow: {
                 img: 'img/driver_slow.jpg',
@@ -151,10 +155,12 @@
                 b.onclick = () => {
                     history.push(btn.next);
                     render(btn.next);
-                    // Начинаем музыку при первом клике на СТАРТ
-                    if (stateKey === 'pre_start' && !musicStarted) {
-                        music.play();
+                    
+                    // Запуск музыки при первом нажатии на любую кнопку
+                    if (!musicStarted) {
+                        music.play().catch(e => console.log("Нужен клик для музыки"));
                         musicStarted = true;
+                        document.getElementById('music-btn').innerText = '🔊 Музыка';
                     }
                 };
                 btnGroup.appendChild(b);
@@ -164,10 +170,10 @@
         function toggleMusic() {
             if (music.paused) {
                 music.play();
-                document.getElementById('music-btn').innerText = '🔊 Музыка ВКЛ';
+                document.getElementById('music-btn').innerText = '🔊 Музыка';
             } else {
                 music.pause();
-                document.getElementById('music-btn').innerText = '🔇 Музыка ВЫКЛ';
+                document.getElementById('music-btn').innerText = '🔇 Музыка';
             }
         }
 
@@ -183,7 +189,6 @@
             render('pre_start');
         }
 
-        // Запуск
         render('pre_start');
     </script>
 </body>
