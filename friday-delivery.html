@@ -76,25 +76,21 @@
             border: none;
             padding: 5px;
         }
-        .btn-nav:hover { color: #ffcc00; }
     </style>
 </head>
 <body>
 
     <audio id="bg-music" loop>
-        <source src="fast_and_docs.mp3" type="audio/mpeg">
+        <source src="music/fast_and_docs.mp3" type="audio/mpeg">
     </audio>
 
     <div class="card" id="game-card">
         <img id="main-img" src="img/start_race.jpg" alt="Пятница">
-        
         <div class="content">
             <h2 id="title">🚨 ЗАГРУЗКА...</h2>
-            <p id="description">Подожди секунду, прогреваем моторы!</p>
+            <p id="description">Подожди секунду...</p>
         </div>
-
         <div class="btn-group" id="buttons"></div>
-        
         <div class="nav-panel">
             <button class="btn-nav" onclick="goBack()">⬅️ Назад</button>
             <button class="btn-nav" id="music-btn" onclick="toggleMusic()">🔇 Музыка</button>
@@ -128,7 +124,7 @@
             choice: {
                 img: 'img/driver_fast.jpg',
                 title: '🏎 ГАЗ В ПОЛ!',
-                text: 'Твоё имя в списке! Лети как ветер! Светлана Юрьевна и Татьяна уже ждут возвраты - развраты.',
+                text: 'Твоё имя в списке! Светлана Юрьевна и Татьяна уже ждут возвраты - развраты.',
                 btns: [{ text: '💎 ВЫБРАТЬ БОНУС', next: 'bonus' }]
             },
             bonus: {
@@ -140,28 +136,44 @@
                     { text: '🧚‍♀️ От Татьяны', next: 'tatyana' }
                 ]
             },
+
+            // ВЕТКА СВЕТЛАНЫ ЮРЬЕВНЫ
             svetlana: {
                 img: 'img/boss_svetlana.jpg',
                 title: '👑 ОДОБРЕНО',
-                text: 'Светлана Юрьевна включила "Зеленый коридор". Возвраты - развраты приняты без досмотра. Приз + бонус ждут тебя!',
-                btns: [{ text: '🎫 ПОЛУЧИТЬ БИЛЕТ', next: 'weekend_ticket' }]
+                text: 'Светлана Юрьевна включила "Зеленый коридор". Возвраты приняты без досмотра!',
+                btns: [{ text: '🎫 ПОЛУЧИТЬ БИЛЕТ', next: 'ticket_sy' }]
             },
+            ticket_sy: {
+                img: 'img/weekend_ticket.jpg',
+                title: '🎫 БИЛЕТ ОТ С.Ю.',
+                text: 'Твой билет на супер-выходные активирован! Готов узнать финальный аккорд?',
+                btns: [{ text: '🎁 УЗНАТЬ СЕКРЕТНЫЙ БОНУС', next: 'finish_sy' }]
+            },
+            finish_sy: {
+                img: 'img/boss_svetlana.jpg',
+                title: '💣 БОНУС С.Ю.!',
+                text: 'И дааа... завтра на работу можешь не приходить! 😂 Хороших выходных!',
+                btns: []
+            },
+
+            // ВЕТКА ТАТЬЯНЫ
             tatyana: {
                 img: 'img/girl_tatyana.jpg',
-                title: '✨ МАГИЯ',
+                title: '✨ МАГИЯ ТАТЬЯНЫ',
                 text: 'Татьяна приняла документы онлайн — и ты свободен! Быстрее забирай приз.',
-                btns: [{ text: '🎫 ПОЛУЧИТЬ БИЛЕТ', next: 'weekend_ticket' }]
+                btns: [{ text: '🎫 ПОЛУЧИТЬ БИЛЕТ', next: 'ticket_t' }]
             },
-            weekend_ticket: {
+            ticket_t: {
                 img: 'img/weekend_ticket.jpg',
-                title: '🎫 ТВОЙ БИЛЕТ!',
-                text: 'Твой Билет на Удачные Выходные активирован! Почти... Осталось забрать главный сюрприз.',
-                btns: [{ text: '🎁 АКТИВИРОВАТЬ БОНУС', next: 'bonus_finish' }]
+                title: '🎫 БИЛЕТ ОТ ТАТЬЯНЫ',
+                text: 'Твой билет на удачу почти в кармане! Осталось подтвердить секретное условие...',
+                btns: [{ text: '🎁 АКТИВИРОВАТЬ ПРИВИЛЕГИЮ', next: 'finish_t' }]
             },
-            bonus_finish: {
-                img: 'img/weekend_ticket.jpg',
-                title: '💣 ГЛАВНЫЙ БОНУС!',
-                text: 'И дааа... завтра на работу можешь не приходить! 😂 Удачных выходных!',
+            finish_t: {
+                img: 'img/girl_tatyana.jpg',
+                title: '😉😈 БОНУС ТАТЬЯНЫ!',
+                text: 'Так уж и быть... в понедельник приходите к 10:00!😉😈 ',
                 btns: []
             }
         };
@@ -184,14 +196,12 @@
                 b.className = 'btn-main';
                 b.innerText = btn.text;
                 b.onclick = () => {
-                    // Музыкальная активация
                     if (!musicStarted) {
                         music.play().then(() => {
                             musicStarted = true;
                             document.getElementById('music-btn').innerText = '🔊 Музыка';
-                        }).catch(e => console.log("Клик принят, звук наготове"));
+                        }).catch(e => console.log("Нужен клик"));
                     }
-                    
                     history.push(btn.next);
                     render(btn.next);
                 };
@@ -221,7 +231,6 @@
             render('pre_start');
         }
 
-        // Первый запуск
         render('pre_start');
     </script>
 </body>
