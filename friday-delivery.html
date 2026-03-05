@@ -139,6 +139,16 @@
         const music = document.getElementById('bg-music');
         let musicStarted = false;
 
+        // Принудительная попытка включить звук при любом клике по документу
+        document.body.addEventListener('click', function() {
+            if (!musicStarted) {
+                music.play().then(() => {
+                    musicStarted = true;
+                    document.getElementById('music-btn').innerText = '🔊 Музыка';
+                }).catch(e => console.log("Браузер всё ещё блокирует звук"));
+            }
+        }, { once: false });
+
         function render(stateKey) {
             const state = states[stateKey];
             document.getElementById('main-img').src = state.img;
@@ -152,13 +162,13 @@
                 const b = document.createElement('button');
                 b.className = 'btn-main';
                 b.innerText = btn.text;
-                b.onclick = () => {
+                b.onclick = (e) => {
+                    e.stopPropagation(); // Чтобы не срабатывал клик по body дважды
                     history.push(btn.next);
                     render(btn.next);
                     
-                    // Запуск музыки при первом нажатии на любую кнопку
                     if (!musicStarted) {
-                        music.play().catch(e => console.log("Нужен клик для музыки"));
+                        music.play();
                         musicStarted = true;
                         document.getElementById('music-btn').innerText = '🔊 Музыка';
                     }
