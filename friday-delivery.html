@@ -1,0 +1,14 @@
+# Кусочек логики для кнопок
+def get_main_keyboard():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    btn_start = types.InlineKeyboardButton("🏎 Газ в пол!", callback_data="race_start")
+    btn_chill = types.InlineKeyboardButton("🐢 Плестись в хвосте", callback_data="chill")
+    markup.add(btn_start, btn_chill)
+    return markup
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    if call.data == "race_start":
+        # Бот редактирует сообщение: меняет картинку и текст на гоночный мем
+        bot.edit_message_media(...)
+        bot.edit_message_caption("КРАСАВА! Твоя фамилия в списке! Лети к Светлане Юрьевне...")
