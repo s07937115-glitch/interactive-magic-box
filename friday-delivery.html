@@ -54,51 +54,62 @@
         }
         .btn-main { background: #ffcc00; color: #000; }
         .btn-alt { background: #444; color: #fff; }
-        .btn-nav { background: none; color: #888; text-decoration: underline; font-size: 0.8rem; }
-        .hidden { display: none; }
+        .btn-nav { background: none; color: #888; text-decoration: underline; font-size: 0.8rem; margin: 5px; }
     </style>
 </head>
 <body>
 
+    <audio id="bg-music" loop>
+        <source src="music/fast_and_docs.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="card" id="game-card">
-        <img id="main-img" src="start_race.jpg" alt="Пятница">
+        <img id="main-img" src="img/start_race.jpg" alt="Пятница">
         
         <div class="content">
-            <h2 id="title">🚨 ВНИМАНИЕ!</h2>
-            <p id="description">Только сегодня в нашем офисе происходит то, чего не было никогда! Мы запускаем ПЯТНИЧНЫЙ ФОРСАЖ!</p>
+            <h2 id="title">🚨 ПРИСТЕГНИТЕСЬ!</h2>
+            <p id="description">Это твой шанс сделать эту пятницу легендарной. Погнали!</p>
         </div>
 
         <div class="btn-group" id="buttons">
             </div>
         
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px; display: flex; justify-content: space-around;">
             <button class="btn-nav" onclick="goBack()">⬅️ Назад</button>
+            <button class="btn-nav" id="music-btn" onclick="toggleMusic()">🔊 Музыка ВКЛ</button>
             <button class="btn-nav" onclick="restart()">🏠 В начало</button>
         </div>
     </div>
 
     <script>
         const states = {
+            // Новый первый экран: только СТАРТ
+            pre_start: {
+                img: 'img/start_race.jpg',
+                title: '🚨 ПРИСТЕГНИТЕСЬ!',
+                text: 'Это твой шанс сделать эту пятницу легендарной. Готов к Форсажу?',
+                btns: [{ text: '🚀 СТАРТ КВЕСТА!', next: 'start' }]
+            },
             start: {
-                img: 'start_race.jpg',
+                img: 'img/start_race.jpg',
                 title: '🚨 ВНИМАНИЕ!',
                 text: 'Только сегодня — секретный РОЗЫГРЫШ! Приз заберет тот, кто приедет к 15:00.',
                 btns: [{ text: 'Участвовать в розыгрыше', next: 'choice' }, { text: 'Остаться в стороне', next: 'slow' }]
             },
             slow: {
-                img: 'driver_slow.jpg',
+                img: 'img/driver_slow.jpg',
                 title: '🐌 ТЫ ГДЕ?',
                 text: 'Пока ты плетешься в правом ряду, кто-то другой забирает твой фарт! Но шанс еще есть.',
                 btns: [{ text: 'Я ПЕРЕДУМАЛ, ГАЗУЕМ!', next: 'choice' }]
             },
             choice: {
-                img: 'driver_fast.jpg',
+                img: 'img/driver_fast.jpg',
                 title: '🏎 ГАЗ В ПОЛ!',
                 text: 'Твоё имя в списке! Лети как ветер! Светлана Юрьевна и Татьяна уже ждут твои развраты.',
                 btns: [{ text: 'ЗАБРАТЬ БОНУС', next: 'bonus' }]
             },
             bonus: {
-                img: 'final_bonus.jpg',
+                img: 'img/final_bonus.jpg',
                 title: '🔥 ФИНАЛ',
                 text: 'Чьё благословение на быструю приемку ты выберешь?',
                 btns: [
@@ -107,20 +118,22 @@
                 ]
             },
             svetlana: {
-                img: 'boss_svetlana.jpg',
+                img: 'img/boss_svetlana.jpg',
                 title: '👑 ОДОБРЕНО',
                 text: 'Светлана Юрьевна включила "Зеленый коридор". Развраты приняты без досмотра. Домой!',
                 btns: []
             },
             tatyana: {
-                img: 'girl_tatyana.jpg',
+                img: 'img/girl_tatyana.jpg',
                 title: '✨ МАГИЯ',
                 text: 'Татьяна взмахнула степлером — и ты свободен! Хороших выходных!',
                 btns: []
             }
         };
 
-        let history = ['start'];
+        let history = ['pre_start'];
+        const music = document.getElementById('bg-music');
+        let musicStarted = false;
 
         function render(stateKey) {
             const state = states[stateKey];
@@ -138,9 +151,24 @@
                 b.onclick = () => {
                     history.push(btn.next);
                     render(btn.next);
+                    // Начинаем музыку при первом клике на СТАРТ
+                    if (stateKey === 'pre_start' && !musicStarted) {
+                        music.play();
+                        musicStarted = true;
+                    }
                 };
                 btnGroup.appendChild(b);
             });
+        }
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                document.getElementById('music-btn').innerText = '🔊 Музыка ВКЛ';
+            } else {
+                music.pause();
+                document.getElementById('music-btn').innerText = '🔇 Музыка ВЫКЛ';
+            }
         }
 
         function goBack() {
@@ -151,12 +179,12 @@
         }
 
         function restart() {
-            history = ['start'];
-            render('start');
+            history = ['pre_start'];
+            render('pre_start');
         }
 
         // Запуск
-        render('start');
+        render('pre_start');
     </script>
 </body>
 </html>
