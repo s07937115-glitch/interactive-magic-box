@@ -8,14 +8,14 @@
         /* Основные стили */
         body {
             font-family: 'Georgia', serif;
-            background: #fff5f5; /* Нежный розовый фон */
+            background: #fff5f5;
             color: #4a4a4a;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Чтобы не было лишних скроллов при анимации */
+            overflow: hidden;
         }
 
         .card {
@@ -30,29 +30,58 @@
             opacity: 0;
             transform: scale(0.9);
             animation: cardShow 1.2s forwards ease-out;
+            transition: all 0.5s ease;
         }
 
-        /* Контейнер для фото с эффектом "дыхания" */
+        /* Контейнер для фото */
         .img-container {
             width: 100%;
             height: 250px;
             overflow: hidden;
             position: relative;
+            background: #fff;
+            transition: all 0.8s ease-in-out;
         }
 
         #main-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
             animation: breathe 12s infinite alternate ease-in-out;
+        }
+
+        /* КОРРЕКТИРОВКА ФИНАЛЬНОГО ЭТАПА */
+        .final-stage .img-container {
+            height: 220px; /* Немного уменьшаем высоту контейнера в конце */
+            background: #fdf2f4;
+        }
+
+        .final-stage #main-img {
+            object-fit: contain; /* Картинка не обрезается */
+            transform: scale(0.85); /* Делаем сам букет компактнее */
         }
 
         .content {
             padding: 25px 20px;
+            position: relative;
         }
 
-        /* Анимация текста */
+        /* Легкая плашка под текст на финале для читаемости */
+        .final-stage .content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 0;
+        }
+
+        h2, p, #buttons {
+            position: relative;
+            z-index: 1;
+        }
+
         h2 {
             color: #d43f67;
             font-size: 1.6rem;
@@ -69,16 +98,14 @@
             min-height: 85px;
             opacity: 0;
             transform: translateY(15px);
-            transition: 0.8s ease-out 0.2s; /* Небольшая задержка после заголовка */
+            transition: 0.8s ease-out 0.2s;
         }
 
-        /* Состояние видимости для текста */
         .visible {
             opacity: 1 !important;
             transform: translateY(0) !important;
         }
 
-        /* Кнопка */
         #buttons {
             margin-top: 15px;
             transition: opacity 0.5s;
@@ -103,7 +130,6 @@
             box-shadow: 0 8px 20px rgba(212, 63, 103, 0.5);
         }
 
-        /* Группа кнопок "поделиться" */
         .share-group {
             display: flex;
             gap: 10px;
@@ -120,11 +146,11 @@
             text-decoration: none;
             border: 1px solid #ffccd5;
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-share:hover { background: #ffe4e8; }
-
-        /* Ключевые кадры анимаций */
         @keyframes cardShow {
             to { opacity: 1; transform: scale(1); }
         }
@@ -138,10 +164,10 @@
 <body>
 
     <audio id="bg-music" loop>
-        <source src="music/march_music.mp3" type="audio/mpeg">
+        <source src="/march_music.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="card">
+    <div class="card" id="main-card">
         <div class="img-container">
             <img id="main-img" src="img/march_start.jpg" alt="Весна">
         </div>
@@ -167,7 +193,7 @@
                 img: 'img/march_poetry.jpg',
                 title: 'Для вдохновения...',
                 text: 'Пусть в душе всегда цветут цветы,<br>Сбываются заветные мечты.<br>Сияй, люби и будь всегда собой,<br>Пусть радость льется чистою рекой!',
-                btnText: 'Поднимем бокал? 🥂',
+                btnText: 'Поднимем бокалы? 🥂',
                 next: 'toast'
             },
             toast: {
@@ -189,31 +215,37 @@
 
         function nextStep(stepKey) {
             const step = steps[stepKey];
+            const card = document.getElementById('main-card');
             const mainImg = document.getElementById('main-img');
             const title = document.getElementById('title');
             const desc = document.getElementById('description');
             const btnContainer = document.getElementById('buttons');
             const music = document.getElementById('bg-music');
 
-            // 1. Плавно скрываем старый контент
+            // Скрываем элементы перед сменой
             mainImg.style.opacity = '0';
             title.classList.remove('visible');
             desc.classList.remove('visible');
             btnContainer.style.opacity = '0';
 
             setTimeout(() => {
-                // 2. Меняем данные
                 mainImg.src = step.img;
                 title.innerText = step.title;
                 desc.innerHTML = step.text;
 
-                // Запуск музыки при первом клике
+                // Переключаем режим для финала
+                if (step.isFinal) {
+                    card.classList.add('final-stage');
+                } else {
+                    card.classList.remove('final-stage');
+                }
+
                 if (!musicStarted) {
                     music.play();
                     musicStarted = true;
                 }
 
-                // 3. Проявляем новый контент
+                // Проявляем обновленный контент
                 mainImg.style.opacity = '1';
                 title.classList.add('visible');
                 desc.classList.add('visible');
@@ -229,15 +261,15 @@
                 const shareDiv = document.createElement('div');
                 shareDiv.className = 'share-group';
                 shareDiv.innerHTML = `
-                    <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="btn-share" target="_blank">📢 В Telegram</a>
-                    <a href="https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}" class="btn-share" target="_blank">📢 В ВК</a>
+                    <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="btn-share" target="_blank">✈ Telegram</a>
+                    <a href="https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}" class="btn-share" target="_blank">💙 ВКонтакте</a>
                 `;
                 container.appendChild(shareDiv);
                 
                 const restartBtn = document.createElement('button');
                 restartBtn.className = 'btn-main';
                 restartBtn.style.marginTop = '15px';
-                restartBtn.innerText = '🌹 Посмотреть еще раз';
+                restartBtn.innerText = '🌹 Сначала';
                 restartBtn.onclick = () => location.reload();
                 container.appendChild(restartBtn);
             } else {
