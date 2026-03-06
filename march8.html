@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С 8 Марта! ✨</title>
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Georgia', serif;
+            background: #fff5f5; /* Нежный розовый фон */
+            color: #4a4a4a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Чтобы не было лишних скроллов при анимации */
+        }
+
+        .card {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 45px rgba(255, 182, 193, 0.4);
+            max-width: 400px;
+            width: 92%;
+            overflow: hidden;
+            border: 1px solid #ffe4e1;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: cardShow 1.2s forwards ease-out;
+        }
+
+        /* Контейнер для фото с эффектом "дыхания" */
+        .img-container {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.8s ease-in-out;
+            animation: breathe 12s infinite alternate ease-in-out;
+        }
+
+        .content {
+            padding: 25px 20px;
+        }
+
+        /* Анимация текста */
+        h2 {
+            color: #d43f67;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: 0.8s ease-out;
+        }
+
+        p {
+            font-style: italic;
+            line-height: 1.6;
+            font-size: 1.15rem;
+            min-height: 85px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: 0.8s ease-out 0.2s; /* Небольшая задержка после заголовка */
+        }
+
+        /* Состояние видимости для текста */
+        .visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* Кнопка */
+        #buttons {
+            margin-top: 15px;
+            transition: opacity 0.5s;
+        }
+
+        .btn-main {
+            background: linear-gradient(135deg, #ff8da1 0%, #d43f67 100%);
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(212, 63, 103, 0.3);
+            transition: 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .btn-main:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(212, 63, 103, 0.5);
+        }
+
+        /* Группа кнопок "поделиться" */
+        .share-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-share {
+            flex: 1;
+            font-size: 0.9rem;
+            background: #fdf2f4;
+            color: #d43f67;
+            border-radius: 20px;
+            padding: 10px;
+            text-decoration: none;
+            border: 1px solid #ffccd5;
+            transition: 0.3s;
+        }
+
+        .btn-share:hover { background: #ffe4e8; }
+
+        /* Ключевые кадры анимаций */
+        @keyframes cardShow {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes breathe {
+            from { transform: scale(1); }
+            to { transform: scale(1.07); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="music/march_music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="card">
+        <div class="img-container">
+            <img id="main-img" src="img/march_start.jpg" alt="Весна">
+        </div>
+        <div class="content">
+            <h2 id="title" class="visible">Весна уже здесь...</h2>
+            <p id="description" class="visible">Нажми на кнопку, чтобы начать наше маленькое весеннее приключение.</p>
+            <div id="buttons">
+                <button class="btn-main" onclick="nextStep('prose')">🌸 Открыть весну...</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const steps = {
+            prose: {
+                img: 'img/march_prose.jpg',
+                title: 'С праздником весны!',
+                text: 'Пусть каждый твой день будет наполнен светом, нежностью и теплом первых солнечных лучей.',
+                btnText: 'А можно в стихах? ✨',
+                next: 'poetry'
+            },
+            poetry: {
+                img: 'img/march_poetry.jpg',
+                title: 'Для вдохновения...',
+                text: 'Пусть в душе всегда цветут цветы,<br>Сбываются заветные мечты.<br>Сияй, люби и будь всегда собой,<br>Пусть радость льется чистою рекой!',
+                btnText: 'Поднимем бокал? 🥂',
+                next: 'toast'
+            },
+            toast: {
+                img: 'img/march_toast.jpg',
+                title: 'За тебя!',
+                text: 'За твою улыбку, за твою внутреннюю силу и за ту красоту, которую ты несешь в этот мир. Ты удивительна!',
+                btnText: 'Забрать свой подарок 🎁',
+                next: 'gift'
+            },
+            gift: {
+                img: 'img/march_gift.jpg',
+                title: 'Это тебе!',
+                text: 'Пусть этот букет всегда напоминает тебе о том, как ты прекрасна!',
+                isFinal: true
+            }
+        };
+
+        let musicStarted = false;
+
+        function nextStep(stepKey) {
+            const step = steps[stepKey];
+            const mainImg = document.getElementById('main-img');
+            const title = document.getElementById('title');
+            const desc = document.getElementById('description');
+            const btnContainer = document.getElementById('buttons');
+            const music = document.getElementById('bg-music');
+
+            // 1. Плавно скрываем старый контент
+            mainImg.style.opacity = '0';
+            title.classList.remove('visible');
+            desc.classList.remove('visible');
+            btnContainer.style.opacity = '0';
+
+            setTimeout(() => {
+                // 2. Меняем данные
+                mainImg.src = step.img;
+                title.innerText = step.title;
+                desc.innerHTML = step.text;
+
+                // Запуск музыки при первом клике
+                if (!musicStarted) {
+                    music.play();
+                    musicStarted = true;
+                }
+
+                // 3. Проявляем новый контент
+                mainImg.style.opacity = '1';
+                title.classList.add('visible');
+                desc.classList.add('visible');
+                
+                renderButtons(step, btnContainer);
+                btnContainer.style.opacity = '1';
+            }, 800); 
+        }
+
+        function renderButtons(step, container) {
+            container.innerHTML = '';
+            if (step.isFinal) {
+                const shareDiv = document.createElement('div');
+                shareDiv.className = 'share-group';
+                shareDiv.innerHTML = `
+                    <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="btn-share" target="_blank">📢 В Telegram</a>
+                    <a href="https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}" class="btn-share" target="_blank">📢 В ВК</a>
+                `;
+                container.appendChild(shareDiv);
+                
+                const restartBtn = document.createElement('button');
+                restartBtn.className = 'btn-main';
+                restartBtn.style.marginTop = '15px';
+                restartBtn.innerText = '🌹 Посмотреть еще раз';
+                restartBtn.onclick = () => location.reload();
+                container.appendChild(restartBtn);
+            } else {
+                const btn = document.createElement('button');
+                btn.className = 'btn-main';
+                btn.innerText = step.btnText;
+                btn.onclick = () => nextStep(step.next);
+                container.appendChild(btn);
+            }
+        }
+    </script>
+</body>
+</html>
