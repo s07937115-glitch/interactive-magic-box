@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Твоё 8 Марта! ✨</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Comic Sans MS', cursive;
+            background: #000;
+        }
+
+        #game-screen {
+            width: 100%; height: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 0.5s ease-in-out;
+            position: relative;
+        }
+
+        #particle-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.8;
+            animation: float 4s linear infinite;
+        }
+
+        @keyframes float {
+            from { transform: translate(-50%, 0); bottom: -10%; opacity: 1; }
+            to { transform: translate(-50%, -100px); bottom: 120%; opacity: 0; }
+        }
+
+        /* Клик-зоны (невидимые кнопки поверх картинки) */
+        .click-zone {
+            position: absolute;
+            background: rgba(255, 255, 255, 0); /* Прозрачно */
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        /* Координаты зон (подстроены под наши картинки) */
+        .grid-panda { top: 64%; left: 26%; width: 22%; height: 8%; }
+        .grid-empress { top: 64%; left: 52%; width: 22%; height: 8%; }
+        .grid-shark { top: 76%; left: 26%; width: 22%; height: 8%; }
+        .grid-dragons { top: 76%; left: 52%; width: 22%; height: 8%; }
+        .grid-share { top: 87%; left: 32%; width: 36%; height: 10%; }
+        .arrow-left { top: 40%; left: 2%; width: 12%; height: 20%; }
+        .arrow-right { top: 40%; right: 2%; width: 12%; height: 20%; }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="cartoon_music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="game-screen">
+        <div id="particle-container"></div>
+
+        <div class="click-zone grid-panda" onclick="changeStep('panda')"></div>
+        <div class="click-zone grid-empress" onclick="changeStep('empress')"></div>
+        <div class="click-zone grid-shark" onclick="changeStep('shark')"></div>
+        <div class="click-zone grid-dragons" onclick="changeStep('dragons')"></div>
+        <div class="click-zone grid-share" onclick="shareToVk()"></div>
+        <div class="click-zone arrow-left" onclick="moveSlide('left')"></div>
+        <div class="click-zone arrow-right" onclick="moveSlide('right')"></div>
+    </div>
+
+    <script>
+        const steps = {
+            panda: {
+                img: 'img/cartoon_panda.jpg',
+                left: 'dragons', right: 'empress',
+                particles: ['💤', '☕', '🌙', '🧸'],
+                text: 'С праздником! Желаю спать сколько хочешь и не толстеть от вкусняшек! 🐼'
+            },
+            empress: {
+                img: 'img/cartoon_empress.jpg',
+                left: 'panda', right: 'shark',
+                particles: ['🥂', '👑', '💄', '💖'],
+                text: 'Игристое в бокале, корона на боку — сегодня тебе можно всё! 👑'
+            },
+            shark: {
+                img: 'img/cartoon_shark.jpg',
+                left: 'empress', right: 'dragons',
+                particles: ['💰', '📈', '🚀', '💎'],
+                text: 'Пусть счета растут сами, а дедлайны тебя боятся! 🦈'
+            },
+            dragons: {
+                img: 'img/cartoon_dragons.jpg',
+                left: 'shark', right: 'panda',
+                particles: ['❤️', '🔥', '🐉', '✨'],
+                text: 'Ты огонь! Пусть все драконы мира исполняют твои желания! 🐉'
+            }
+        };
+
+        let currentStep = 'panda';
+        let musicStarted = false; // Флаг для запуска музыки
+
+        function changeStep(stepKey) {
+            currentStep = stepKey;
+            const data = steps[stepKey];
+            const screen = document.getElementById('game-screen');
+            const music = document.getElementById('bg-music');
+
+            // Запускаем музыку при первом же клике
+            if (!musicStarted) {
+                music.play().catch(e => console.log("Нужен клик для музыки"));
+                musicStarted = true;
+            }
+            
+            screen.style.backgroundImage = `url(${data.img})`;
+            createParticles(data.particles);
+        }
+
+        function moveSlide(direction) {
+            const data = steps[currentStep];
+            if (direction === 'left') changeStep(data.left);
+            if (direction === 'right') changeStep(data.right);
+        }
+
+        function createParticles(types) {
+            const container = document.getElementById('particle-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.innerText = types[Math.floor(Math.random() * types.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(p);
+            }
+        }
+
+        function shareToVk() {
+            const text = encodeURIComponent(steps[currentStep].text);
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://vk.com/share.php?url=${url}&title=${text}`, '_blank');
+        }
+
+        window.onload = () => changeStep('panda');
+    </script>
+</body>
+</html>
