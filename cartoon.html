@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Твоё 8 Марта! ✨</title>
     <style>
         body, html {
@@ -18,101 +18,103 @@
             background-repeat: no-repeat;
             position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         /* Облако с текстом */
         #text-bubble {
             position: absolute;
-            top: 12%; /* Чуть выше, чтобы не закрывать лица */
+            top: 10%;
             width: 85%;
             max-width: 360px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
             border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(212, 63, 103, 0.2);
             text-align: center;
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #d43f67;
             border: 2px solid #ffccd5;
             z-index: 50;
             display: none;
-            animation: bounce 3s infinite ease-in-out;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        /* НАСТОЯЩИЕ КНОПКИ ПОДЕЛИТЬСЯ */
+        .share-container {
+            position: absolute;
+            bottom: 30px; /* Безопасное расстояние от низа */
+            width: 90%;
+            display: flex;
+            gap: 10px;
+            z-index: 70;
+            display: none; /* Появится после старта */
         }
 
-        /* ЛЕТАЮЩИЕ ЭМОДЗИ (ИСПРАВЛЕНО) */
+        .btn-action {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.2s;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-vk { background: #0077FF; }
+        .btn-tg { background: #24A1DE; }
+        .btn-action:active { transform: scale(0.95); }
+
+        /* Кликовые зоны для выбора героев (оставляем сверху, там они обычно крупнее) */
+        .click-zone {
+            position: absolute;
+            background: rgba(0,0,0,0);
+            z-index: 60;
+        }
+        .grid-panda { top: 60%; left: 20%; width: 30%; height: 10%; }
+        .grid-empress { top: 60%; left: 50%; width: 30%; height: 10%; }
+        .grid-shark { top: 70%; left: 20%; width: 30%; height: 10%; }
+        .grid-dragons { top: 70%; left: 50%; width: 30%; height: 10%; }
+        
+        /* Стрелки */
+        .arrow-left { top: 30%; left: 0; width: 20%; height: 30%; }
+        .arrow-right { top: 30%; right: 0; width: 20%; height: 30%; }
+
+        /* Эмодзи */
         #particle-container {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             pointer-events: none;
             z-index: 20;
         }
-
         .particle {
             position: absolute;
             font-size: 2.2rem;
             bottom: -50px;
             animation: floatAnimation 5s linear infinite;
         }
-
         @keyframes floatAnimation {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Кликовые зоны */
-        .click-zone {
-            position: absolute;
-            background: rgba(0, 0, 0, 0); /* 0.1 для теста */
-            cursor: pointer;
-            z-index: 60;
-        }
-
-        /* Точные зоны под кнопки на картинках */
-        .grid-panda { top: 64%; left: 26%; width: 22%; height: 8%; }
-        .grid-empress { top: 64%; left: 52%; width: 22%; height: 8%; }
-        .grid-shark { top: 76%; left: 26%; width: 22%; height: 8%; }
-        .grid-dragons { top: 76%; left: 52%; width: 22%; height: 8%; }
-        
-        /* Кнопка "Поделиться" (разделена на две части: ВК и ТГ) */
-        .grid-share-vk { bottom: 3%; left: 15%; width: 35%; height: 10%; }
-        .grid-share-tg { bottom: 3%; right: 15%; width: 35%; height: 10%; }
-        
-        .arrow-left { top: 35%; left: 0; width: 15%; height: 25%; }
-        .arrow-right { top: 35%; right: 0; width: 15%; height: 25%; }
-
-        /* Стартовый экран */
+        /* Старт */
         #start-overlay {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, #fff5f8, #ffdee9);
+            position: absolute; inset: 0;
+            background: #fff5f8;
             z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-
         .btn-start {
-            background: linear-gradient(135deg, #ff8da1, #d43f67);
-            color: white;
-            border: none;
-            padding: 18px 45px;
-            border-radius: 50px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(212, 63, 103, 0.4);
-            transition: 0.3s;
+            background: #d43f67; color: white; border: none;
+            padding: 20px 50px; border-radius: 50px; font-size: 1.5rem;
+            font-weight: bold; cursor: pointer; margin-top: 20px;
         }
-        .btn-start:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -122,8 +124,8 @@
     </audio>
 
     <div id="start-overlay">
-        <h1 style="color:#d43f67; margin-bottom: 10px;">Привет, сияющая! ✨</h1>
-        <p style="font-size:1.1rem; color: #666; padding: 0 30px; line-height: 1.4;">Выбери, кем ты будешь сегодня. <br> Нажми кнопку, чтобы открыть весну!</p>
+        <h1 style="color:#d43f67">Твоё 8 Марта! ✨</h1>
+        <p>Выбери: какой ты хочешь быть сегодня</p>
         <button class="btn-start" onclick="startGame()">ПОЕХАЛИ! 🚀</button>
     </div>
 
@@ -131,13 +133,15 @@
         <div id="text-bubble"></div>
         <div id="particle-container"></div>
 
+        <div class="share-container" id="share-buttons">
+            <button class="btn-action btn-vk" onclick="shareVk()">📢 ВКонтакте</button>
+            <button class="btn-action btn-tg" onclick="shareTg()">✈ Telegram</button>
+        </div>
+
         <div class="click-zone grid-panda" onclick="changeStep('panda')"></div>
         <div class="click-zone grid-empress" onclick="changeStep('empress')"></div>
         <div class="click-zone grid-shark" onclick="changeStep('shark')"></div>
         <div class="click-zone grid-dragons" onclick="changeStep('dragons')"></div>
-        
-        <div class="click-zone grid-share-vk" onclick="shareVk()"></div>
-        <div class="click-zone grid-share-tg" onclick="shareTg()"></div>
         
         <div class="click-zone arrow-left" onclick="moveSlide('left')"></div>
         <div class="click-zone arrow-right" onclick="moveSlide('right')"></div>
@@ -145,36 +149,11 @@
 
     <script>
         const steps = {
-            panda: {
-                img: 'img/cartoon_panda.jpg',
-                left: 'dragons', right: 'empress',
-                particles: ['💤', '☕', '🐼', '🧸', '☁️'],
-                text: 'ПАНДА: "Я не ленивая, я энергосберегающая!" Пусть сегодня единственным делом будет выбор сериала. Отдыхай на все 100%! 🐼😴'
-            },
-            empress: {
-                img: 'img/cartoon_empress.jpg',
-                left: 'panda', right: 'shark',
-                particles: ['👑', '🥂', '💃', '💖', '✨'],
-                text: 'ИМПЕРАТРИЦА: "Где мои кареты и игристое?" Желаю сиять так, чтобы у хейтеров завяли уши, а у поклонников выросли крылья! 👑🍾'
-            },
-            shark: {
-                img: 'img/cartoon_shark.jpg',
-                left: 'empress', right: 'dragons',
-                particles: ['📈', '💰', '💎', '🦈', '🔥'],
-                text: 'АКУЛА БИЗНЕСА: "Скиньте оффер на счастье!" Пусть счета пополняются быстрее, чем приходят уведомления. Ты Boss! 🦈💼'
-            },
-            dragons: {
-                img: 'img/cartoon_dragons.jpg',
-                left: 'shark', right: 'final',
-                particles: ['🔥', '🐉', '❤️', '💅', '💎'],
-                text: 'МАТЬ ДРАКОНОВ: "Дракарис на все проблемы!" Желаю, чтобы твоя внутренняя сила сжигала все преграды на пути к мечте. 🐉🔥'
-            },
-            final: {
-                img: 'img/cartoon_dragons.jpg', 
-                left: 'dragons', right: 'panda',
-                particles: ['🌸', '🎉', '🎁', '🎀', '💥'],
-                text: 'ФИНАЛОЧКА: Кем бы ты ни была — ты уникальна! Пусть весна подарит море любви, цветов и того самого ощущения, что ТЫ МОЖЕШЬ ВСЁ! 💐✨'
-            }
+            panda: { img: 'img/cartoon_panda.jpg', left: 'dragons', right: 'empress', particles: ['💤', '☕', '🐼'], text: 'ПАНДА: Сегодня официальный день энергосбережения! Отдыхай за всех нас! 🐼☕' },
+            empress: { img: 'img/cartoon_empress.jpg', left: 'panda', right: 'shark', particles: ['👑', '🥂', '✨'], text: 'ИМПЕРАТРИЦА: Карету мне! Игристого! И побольше лайков! Сияй, королева! 👑🥂' },
+            shark: { img: 'img/cartoon_shark.jpg', left: 'empress', right: 'dragons', particles: ['📈', '💰', '🦈'], text: 'АКУЛА: Пусть офферы будут только на миллион, а кофе всегда горячим! 🦈📈' },
+            dragons: { img: 'img/cartoon_dragons.jpg', left: 'shark', right: 'final', particles: ['🔥', '🐉', '❤️'], text: 'МАТЬ ДРАКОНОВ: Сжигай преграды одним взглядом! Ты огонь! 🐉🔥' },
+            final: { img: 'img/cartoon_dragons.jpg', left: 'dragons', right: 'panda', particles: ['🌸', '🎉', '🎁'], text: 'С ПРАЗДНИКОМ! Будь любой, будь собой, будь счастливой! 💐✨' }
         };
 
         let currentStep = 'panda';
@@ -182,19 +161,16 @@
         function startGame() {
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('text-bubble').style.display = 'block';
-            const music = document.getElementById('bg-music');
-            music.play();
+            document.getElementById('share-buttons').style.display = 'flex';
+            document.getElementById('bg-music').play();
             changeStep('panda');
         }
 
         function changeStep(stepKey) {
             currentStep = stepKey;
             const data = steps[stepKey];
-            const screen = document.getElementById('game-screen');
-            const bubble = document.getElementById('text-bubble');
-            
-            screen.style.backgroundImage = `url(${data.img})`;
-            bubble.innerText = data.text;
+            document.getElementById('game-screen').style.backgroundImage = `url(${data.img})`;
+            document.getElementById('text-bubble').innerText = data.text;
             createParticles(data.particles);
         }
 
@@ -207,26 +183,23 @@
         function createParticles(types) {
             const container = document.getElementById('particle-container');
             container.innerHTML = '';
-            for (let i = 0; i < 25; i++) {
+            for (let i = 0; i < 20; i++) {
                 const p = document.createElement('div');
                 p.className = 'particle';
                 p.innerText = types[Math.floor(Math.random() * types.length)];
                 p.style.left = Math.random() * 95 + '%';
                 p.style.animationDelay = Math.random() * 5 + 's';
-                p.style.fontSize = (Math.random() * 1.5 + 1.2) + 'rem';
                 container.appendChild(p);
             }
         }
 
         function shareVk() {
-            const url = encodeURIComponent(window.location.href);
-            window.open(`https://vk.com/share.php?url=${url}`, '_blank');
+            window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}`, '_blank');
         }
 
         function shareTg() {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent("Смотри, какую крутую открытку я нашла! Выбери своё альтер-эго к 8 Марта! ✨🌸");
-            // ИСПРАВЛЕННАЯ ССЫЛКА ДЛЯ ТГ
+            const text = encodeURIComponent("Смотри, какую крутую открытку я нашла! Выбери своё второе я! ✨🌸");
             window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
         }
     </script>
